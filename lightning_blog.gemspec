@@ -5,7 +5,7 @@ Gem::Specification.new do |spec|
   spec.version     = LightningBlog::VERSION
   spec.authors     = [ "Daniel Rodriguez" ]
   spec.email       = [ "daniel.rod93@gmail.com" ]
-  spec.homepage    = "https://github.com/yourusername/lightning_blog"
+  spec.homepage    = "https://github.com/LightningRails/lightning_blog"
   spec.summary     = "A mountable blog engine for Rails applications with Tailwind/DaisyUI support."
   spec.description = "Lightning Blog is a Rails engine that provides a complete blog solution that can be easily mounted into any Rails application. Features include post management, categories, search, and responsive design with optional Tailwind CSS and DaisyUI styling."
   spec.license     = "MIT"
@@ -15,8 +15,8 @@ Gem::Specification.new do |spec|
   # spec.metadata["allowed_push_host"] = "TODO: Set to 'http://mygemserver.com'"
 
   spec.metadata["homepage_uri"] = spec.homepage
-  spec.metadata["source_code_uri"] = "https://github.com/yourusername/lightning_blog"
-  spec.metadata["changelog_uri"] = "https://github.com/yourusername/lightning_blog/blob/main/CHANGELOG.md"
+  spec.metadata["source_code_uri"] = "https://github.com/LightningRails/lightning_blog"
+  spec.metadata["changelog_uri"] = "https://github.com/LightningRails/lightning_blog/blob/main/CHANGELOG.md"
 
   spec.files = Dir.chdir(File.expand_path(__dir__)) do
     Dir["{app,config,db,lib}/**/*", "MIT-LICENSE", "Rakefile", "README.md"]

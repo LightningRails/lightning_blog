@@ -43,7 +43,7 @@ gem 'lightning_blog', path: '/path/to/lightning_blog'
 Or if you're using it from a Git repository:
 
 ```ruby
-gem 'lightning_blog', git: 'https://github.com/yourusername/lightning_blog.git'
+gem 'lightning_blog', git: 'https://github.com/LightningRails/lightning_blog.git'
 ```
 
 And then execute:
@@ -330,7 +330,7 @@ $ gem build lightning_blog.gemspec
 
 ### Contributing
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/yourusername/lightning_blog.
+Bug reports and pull requests are welcome on GitHub at https://github.com/LightningRails/lightning_blog.
 
 ## FAQ
 

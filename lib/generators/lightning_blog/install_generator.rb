@@ -127,7 +127,7 @@ module LightningBlog
         end
         
         say "📚 Documentation: Check out the README.md file"
-        say "🐛 Issues: https://github.com/yourusername/lightning_blog/issues"
+        say "🐛 Issues: https://github.com/LightningRails/lightning_blog/issues"
         say ""
         say "Happy blogging! ✨"
         say ""
