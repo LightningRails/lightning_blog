@@ -1,105 +1,144 @@
-<div class="container mx-auto px-4 py-8 max-w-7xl">
-  <!-- Header Section -->
-  <div class="text-center mb-12">
-    <h1 class="text-4xl md:text-5xl font-bold text-base-content mb-6">Blog</h1>
-    
-    <!-- Search Form -->
-    <%= form_with url: lightning_blog.posts_path, method: :get, local: true, class: "max-w-md mx-auto" do |form| %>
-      <div class="join w-full">
-        <%= form.text_field :search, 
-            placeholder: "Search posts...", 
-            value: params[:search], 
-            class: "input input-bordered join-item flex-1" %>
-        <%= form.submit "Search", class: "btn btn-primary join-item" %>
-      </div>
-    <% end %>
-  </div>
-
-  <div class="grid lg:grid-cols-4 gap-8">
-    <!-- Sidebar -->
-    <div class="lg:col-span-1">
-      <div class="card bg-base-100 shadow-md">
-        <div class="card-body">
-          <h3 class="card-title text-lg mb-4">Categories</h3>
-          <div class="space-y-2">
-            <%= link_to lightning_blog.root_path, 
-                class: "btn btn-ghost btn-sm justify-start w-full #{'btn-active' if params[:category].blank?}" do %>
-              All Posts
-            <% end %>
-            
-            <% @categories.each do |category| %>
-              <%= link_to lightning_blog.category_path(category), 
-                  class: "btn btn-ghost btn-sm justify-start w-full #{'btn-active' if params[:category] == category.slug}" do %>
-                <span class="flex-1 text-left"><%= category.name %></span>
-                <span class="badge badge-neutral badge-sm"><%= category.posts_count %></span>
-              <% end %>
-            <% end %>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Posts Grid -->
-    <div class="lg:col-span-3">
-      <% if @posts.any? %>
-        <div class="grid gap-6">
-          <% @posts.each do |post| %>
-            <article class="card bg-base-100 shadow-md hover:shadow-lg transition-shadow">
-              <% if post.featured_image_file.attached? %>
-                <figure class="h-48 overflow-hidden">
-                  <%= image_tag post.featured_image_file, 
-                      alt: post.title,
-                      class: "w-full h-full object-cover" %>
-                </figure>
-              <% end %>
-              
-              <div class="card-body">
-                <!-- Post Meta -->
-                <div class="flex flex-wrap gap-2 mb-3 text-sm">
-                  <% if post.category %>
-                    <%= link_to post.category.name, 
-                        lightning_blog.category_path(post.category), 
-                        class: "badge badge-primary" %>
-                  <% end %>
-                  <span class="badge badge-ghost">
-                    <%= post.published_at.strftime("%B %d, %Y") %>
-                  </span>
-                  <span class="badge badge-ghost">
-                    <%= post.reading_time %> min read
-                  </span>
-                </div>
-                
-                <!-- Post Title -->
-                <h2 class="card-title text-xl mb-3 hover:text-primary transition-colors">
-                  <%= link_to post.title, lightning_blog.post_path(post) %>
-                </h2>
-                
-                <!-- Post Excerpt -->
-                <% if post.excerpt.present? %>
-                  <p class="text-base-content/70 mb-4"><%= truncate(post.excerpt, length: 150) %></p>
-                <% else %>
-                  <p class="text-base-content/70 mb-4"><%= truncate(strip_tags(post.content), length: 150) %></p>
-                <% end %>
-                
-                <div class="card-actions justify-end">
-                  <%= link_to "Read More", 
-                      lightning_blog.post_path(post), 
-                      class: "btn btn-primary btn-sm" %>
-                </div>
-              </div>
-            </article>
+<div data-theme="<%= LightningBlog.theme %>" class="min-h-screen bg-base-100">
+  <div class="container mx-auto px-4 py-8">
+    <!-- Header -->
+    <div class="text-center mb-12">
+      <h1 class="text-5xl font-bold text-base-content mb-4">Lightning Blog</h1>
+      <p class="text-xl text-base-content/70">Discover amazing content</p>
+      
+      <!-- Search Form -->
+      <% if LightningBlog.enable_search? %>
+        <div class="mt-8">
+          <%= form_with url: lightning_blog.root_path, method: :get, local: true, class: "flex justify-center gap-2" do |form| %>
+            <%= form.text_field :search, 
+                placeholder: "Search posts...", 
+                value: params[:search], 
+                class: "input input-bordered input-primary w-full max-w-xs" %>
+            <%= form.submit "Search", class: "btn btn-primary" %>
           <% end %>
-        </div>
-      <% else %>
-        <div class="text-center py-12">
-          <div class="max-w-md mx-auto">
-            <h3 class="text-2xl font-semibold text-base-content mb-4">No posts found</h3>
-            <p class="text-base-content/70">
-              There are no published posts<%= " matching your search" if params[:search].present? %>.
-            </p>
-          </div>
         </div>
       <% end %>
     </div>
+
+    <div class="grid lg:grid-cols-4 gap-6">
+      <!-- Sidebar -->
+      <div class="lg:col-span-1">
+        <div class="card bg-base-200 shadow-xl">
+          <div class="card-body">
+            <h3 class="card-title text-base-content">Categories</h3>
+            <div class="divider"></div>
+            <ul class="menu bg-base-200 rounded-box">
+              <%= link_to lightning_blog.root_path, 
+                  class: "btn btn-ghost justify-start #{'btn-active' if params[:category_id].blank?}" do %>
+                All Posts
+                <span class="badge badge-primary"><%= @total_posts %></span>
+              <% end %>
+              
+              <% @categories.each do |category| %>
+                <li>
+                  <%= link_to lightning_blog.category_path(category), 
+                      class: "btn btn-ghost justify-start #{'btn-active' if params[:category_id] == category.id.to_s}" do %>
+                    <%= category.name %>
+                    <span class="badge badge-ghost"><%= category.posts.published.count %></span>
+                  <% end %>
+                </li>
+              <% end %>
+            </ul>
+            
+            <div class="mt-6">
+              <%= link_to "View All Categories", lightning_blog.categories_path, 
+                  class: "btn btn-outline btn-primary btn-sm w-full" %>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Main Content -->
+      <div class="lg:col-span-3">
+        <% if params[:search].present? %>
+          <div class="alert alert-info mb-6 shadow-lg">
+            <div>
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="stroke-current flex-shrink-0 w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+              <span>Showing results for "<strong><%= params[:search] %></strong>" - <%= @posts.count %> posts found</span>
+            </div>
+          </div>
+        <% end %>
+
+        <% if @posts.any? %>
+          <div class="grid md:grid-cols-2 gap-6">
+            <% @posts.each do |post| %>
+              <div class="card bg-base-100 shadow-xl hover:shadow-2xl transition-all duration-300">
+                <% if post.featured_image.attached? %>
+                  <figure class="h-48 overflow-hidden">
+                    <%= image_tag post.featured_image, 
+                        class: "w-full h-full object-cover hover:scale-105 transition-transform duration-300",
+                        alt: post.title %>
+                  </figure>
+                <% end %>
+                
+                <div class="card-body">
+                  <div class="flex items-center gap-2 mb-3">
+                    <%= link_to lightning_blog.category_path(post.category), 
+                        class: "badge badge-primary" do %>
+                      <%= post.category.name %>
+                    <% end %>
+                    <span class="text-sm text-base-content/60">
+                      <%= post.published_at&.strftime("%B %d, %Y") %>
+                    </span>
+                  </div>
+                  
+                  <h2 class="card-title text-base-content">
+                    <%= link_to post.title, lightning_blog.post_path(post), 
+                        class: "hover:text-primary transition-colors" %>
+                  </h2>
+                  
+                  <% if post.excerpt.present? %>
+                    <p class="text-base-content/70 mb-4"><%= truncate(post.excerpt, length: LightningBlog.excerpt_length) %></p>
+                  <% end %>
+                  
+                  <div class="card-actions justify-between items-center">
+                    <%= link_to "Read More", lightning_blog.post_path(post), 
+                        class: "btn btn-primary btn-sm" %>
+                    
+                    <div class="flex items-center gap-4 text-sm text-base-content/60">
+                      <span><%= post.reading_time %> min read</span>
+                      <% if LightningBlog.track_views? %>
+                        <span><%= pluralize(post.views_count, 'view') %></span>
+                      <% end %>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            <% end %>
+          </div>
+        <% else %>
+          <div class="card bg-base-200 shadow-xl">
+            <div class="card-body text-center py-16">
+              <h3 class="text-2xl font-bold text-base-content mb-4">No posts found</h3>
+              <% if params[:search].present? %>
+                <p class="text-base-content/70 mb-6">Try searching with different keywords</p>
+                <%= link_to "View All Posts", lightning_blog.root_path, 
+                    class: "btn btn-primary" %>
+              <% else %>
+                <p class="text-base-content/70">There are no published posts yet.</p>
+              <% end %>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    </div>
   </div>
-</div> 
+</div>
+
+<!-- Fallback styles for non-Tailwind environments -->
+<style>
+  body:not(.tailwind-loaded) [data-theme] {
+    background-color: #ffffff;
+    color: #1f2937;
+    min-height: 100vh;
+  }
+  
+  body:not(.tailwind-loaded) [data-theme="dark"] {
+    background-color: #1f2937;
+    color: #f9fafb;
+  }
+</style> 

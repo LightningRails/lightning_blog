@@ -72,6 +72,46 @@ module LightningBlog
         @daisyui_method = detect_daisyui_method
       end
       
+      def select_theme
+        @selected_theme = 'light' # default
+        
+        if @has_tailwind && @has_daisyui
+          say ""
+          say "🎨 DaisyUI Theme Selection"
+          say "=" * 50
+          say ""
+          say "Choose a DaisyUI theme for your Lightning Blog:"
+          say ""
+          say "Popular themes:"
+          say "• light (default)     • dark              • cupcake"
+          say "• bumblebee          • emerald            • corporate"
+          say "• synthwave          • retro              • cyberpunk"
+          say "• valentine          • halloween          • garden"
+          say "• forest             • aqua               • lofi"
+          say "• pastel             • fantasy            • wireframe"
+          say "• black              • luxury             • dracula"
+          say "• cmyk               • autumn             • business"
+          say "• acid               • lemonade           • night"
+          say "• coffee             • winter             • dim"
+          say "• nord               • sunset"
+          say ""
+          say "💡 If you already have a DaisyUI theme in your app, just enter its name."
+          say "   You can change this later in config/initializers/lightning_blog.rb"
+          say ""
+          
+          theme_input = ask("Enter theme name (or press Enter for 'light'):")
+          @selected_theme = theme_input.strip.empty? ? 'light' : theme_input.strip.downcase
+          
+          say ""
+          say "✅ Selected theme: #{@selected_theme}"
+        elsif @has_tailwind
+          say ""
+          say "🎨 For theme support, consider adding DaisyUI:"
+          say "   https://daisyui.com/docs/install/rails/"
+          say "   Lightning Blog will use enhanced Tailwind styling for now."
+        end
+      end
+      
       def add_tailwind_classes_if_needed
         if @has_tailwind
           # Add Tailwind class detection script to application layout
@@ -93,9 +133,28 @@ module LightningBlog
         end
       end
       
+      def add_theme_to_layout
+        if @has_tailwind && @has_daisyui && @selected_theme
+          layout_file = 'app/views/layouts/application.html.erb'
+          if File.exist?(layout_file)
+            layout_content = File.read(layout_file)
+            
+            # Check if data-theme is already set
+            unless layout_content.include?('data-theme=')
+              # Add data-theme to body tag
+              gsub_file layout_file, /<body([^>]*)>/, "<body\\1 data-theme=\"#{@selected_theme}\">"
+              say "✅ Added data-theme=\"#{@selected_theme}\" to your layout"
+            else
+              say "⏭️  data-theme already set in layout"
+            end
+          end
+        end
+      end
+      
       def create_initializer
         tailwind_status = @has_tailwind ? "✅ Detected" : "❌ Not detected"
         daisyui_status = @has_daisyui ? "✅ Detected (#{@daisyui_method})" : "❌ Not detected"
+        theme_status = @selected_theme || 'light'
         
         create_file "config/initializers/lightning_blog.rb", <<~RUBY
           # Lightning Blog Configuration
@@ -103,28 +162,37 @@ module LightningBlog
           # Detected setup:
           # - Tailwind CSS: #{tailwind_status}
           # - DaisyUI: #{daisyui_status}
+          # - Selected Theme: #{theme_status}
           #
           # Lightning Blog works with any Rails application, with enhanced styling 
           # when Tailwind CSS and DaisyUI are available.
           #
           # Setup following: https://daisyui.com/docs/install/rails/
           
-          # LightningBlog.configure do |config|
-          #   # Set the number of posts per page (default: 10)
-          #   # config.posts_per_page = 10
-          #   
-          #   # Enable/disable search functionality (default: true)
-          #   # config.enable_search = true
-          #   
-          #   # Set the excerpt length (default: 150)
-          #   # config.excerpt_length = 150
-          #   
-          #   # Enable/disable view tracking (default: true)
-          #   # config.track_views = true
-          #   
-          #   # Force Tailwind mode (useful for custom setups)
-          #   # config.force_tailwind_mode = false
-          # end
+          LightningBlog.configure do |config|
+            # Theme Configuration
+            # Change this to any DaisyUI theme: light, dark, cupcake, bumblebee, emerald, 
+            # corporate, synthwave, retro, cyberpunk, valentine, halloween, garden, forest, 
+            # aqua, lofi, pastel, fantasy, wireframe, black, luxury, dracula, cmyk, autumn, 
+            # business, acid, lemonade, night, coffee, winter, dim, nord, sunset
+            config.theme = '#{theme_status}'
+            
+            # Blog Configuration
+            # Set the number of posts per page (default: 10)
+            # config.posts_per_page = 10
+            
+            # Enable/disable search functionality (default: true)
+            # config.enable_search = true
+            
+            # Set the excerpt length (default: 150)
+            # config.excerpt_length = 150
+            
+            # Enable/disable view tracking (default: true)
+            # config.track_views = true
+            
+            # Force Tailwind mode (useful for custom setups)
+            # config.force_tailwind_mode = #{@has_tailwind}
+          end
         RUBY
       end
       
@@ -139,6 +207,7 @@ module LightningBlog
           say "🎨 Perfect! Your app has Tailwind CSS + DaisyUI"
           say "   Lightning Blog will use the enhanced styling!"
           say "   Method detected: #{@daisyui_method}"
+          say "   Selected theme: #{@selected_theme}"
         elsif @has_tailwind
           say "🎨 Great! Your app has Tailwind CSS"
           say "   To add DaisyUI for enhanced components, follow:"
@@ -166,6 +235,16 @@ module LightningBlog
           say "1. Restart your server and visit: http://localhost:3000/blog"
         end
         say ""
+        
+        if @has_tailwind && @has_daisyui
+          say "🎨 Theme Customization:"
+          say "   • Change theme in config/initializers/lightning_blog.rb"
+          say "   • Available themes: light, dark, cupcake, bumblebee, emerald, corporate,"
+          say "     synthwave, retro, cyberpunk, valentine, halloween, garden, forest,"
+          say "     aqua, lofi, pastel, fantasy, wireframe, black, luxury, dracula,"
+          say "     cmyk, autumn, business, acid, lemonade, night, coffee, winter, dim, nord, sunset"
+          say ""
+        end
         
         unless @has_tailwind && @has_daisyui
           say "💡 For the best Lightning Blog experience:"

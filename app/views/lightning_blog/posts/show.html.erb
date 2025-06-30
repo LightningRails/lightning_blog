@@ -1,90 +1,185 @@
-<div class="container mx-auto px-4 py-8 max-w-4xl">
-  <article class="prose prose-lg max-w-none">
-    <!-- Post Header -->
-    <header class="mb-8 text-center">
-      <!-- Post Meta -->
-      <div class="flex flex-wrap justify-center gap-2 mb-6 text-sm">
-        <% if @post.category %>
-          <%= link_to @post.category.name, 
-              lightning_blog.category_path(@post.category), 
-              class: "badge badge-primary badge-lg" %>
-        <% end %>
-        <span class="badge badge-ghost badge-lg">
-          <%= @post.published_at.strftime("%B %d, %Y") %>
-        </span>
-        <span class="badge badge-ghost badge-lg">
-          <%= @post.reading_time %> min read
-        </span>
-        <span class="badge badge-ghost badge-lg">
-          <%= pluralize(@post.views_count, 'view') %>
-        </span>
-      </div>
-      
-      <h1 class="text-4xl md:text-5xl font-bold text-base-content mb-6"><%= @post.title %></h1>
-      
-      <% if @post.excerpt.present? %>
-        <div class="text-xl text-base-content/70 mb-6 font-medium">
-          <%= @post.excerpt %>
-        </div>
+<div data-theme="<%= LightningBlog.theme %>" class="min-h-screen bg-base-100">
+  <div class="container mx-auto px-4 py-8 max-w-4xl">
+    <!-- Navigation -->
+    <div class="mb-8">
+      <%= link_to lightning_blog.root_path, class: "btn btn-ghost gap-2" do %>
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
+        </svg>
+        Back to Blog
       <% end %>
-    </header>
-    
-    <!-- Featured Image -->
-    <% if @post.featured_image_file.attached? %>
-      <figure class="mb-8">
-        <%= image_tag @post.featured_image_file, 
-            alt: @post.title,
-            class: "w-full rounded-lg shadow-lg" %>
-      </figure>
-    <% end %>
-    
-    <!-- Post Content -->
-    <div class="prose prose-lg max-w-none prose-headings:text-base-content prose-p:text-base-content prose-a:text-primary prose-strong:text-base-content prose-code:text-base-content prose-pre:bg-base-200 prose-blockquote:text-base-content prose-blockquote:border-primary">
-      <%= simple_format(@post.content) %>
     </div>
-  </article>
-  
-  <!-- Navigation -->
-  <div class="text-center my-8">
-    <%= link_to lightning_blog.root_path, class: "btn btn-outline" do %>
-      <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
-      </svg>
-      Back to Blog
-    <% end %>
-  </div>
-  
-  <!-- Related Posts -->
-  <% if @related_posts.any? %>
-    <section class="mt-12">
-      <div class="divider">
-        <h3 class="text-2xl font-bold text-base-content">Related Posts</h3>
-      </div>
-      
-      <div class="grid md:grid-cols-3 gap-6 mt-8">
-        <% @related_posts.each do |post| %>
-          <div class="card bg-base-100 shadow-md hover:shadow-lg transition-shadow">
-            <% if post.featured_image_file.attached? %>
-              <figure class="h-32 overflow-hidden">
-                <%= image_tag post.featured_image_file, 
-                    alt: post.title,
-                    class: "w-full h-full object-cover" %>
-              </figure>
-            <% end %>
+
+    <!-- Post Article -->
+    <article class="card bg-base-100 shadow-xl">
+      <!-- Featured Image -->
+      <% if @post.featured_image.attached? %>
+        <figure class="h-64 md:h-96 overflow-hidden">
+          <%= image_tag @post.featured_image, 
+              class: "w-full h-full object-cover",
+              alt: @post.title %>
+        </figure>
+      <% end %>
+
+      <div class="card-body">
+        <!-- Post Meta -->
+        <div class="flex flex-wrap items-center gap-4 mb-6 text-sm">
+          <%= link_to lightning_blog.category_path(@post.category), 
+              class: "badge badge-primary badge-lg" do %>
+            <%= @post.category.name %>
+          <% end %>
+          
+          <div class="flex items-center gap-4 text-base-content/70">
+            <span class="flex items-center gap-1">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5a2.25 2.25 0 002.25-2.25m-18 0v-7.5A2.25 2.25 0 005.25 9h13.5a2.25 2.25 0 002.25 2.25v7.5" />
+              </svg>
+              <%= @post.published_at&.strftime("%B %d, %Y") %>
+            </span>
             
-            <div class="card-body p-4">
-              <h4 class="card-title text-base">
-                <%= link_to post.title, 
-                    lightning_blog.post_path(post),
-                    class: "hover:text-primary transition-colors" %>
-              </h4>
-              <p class="text-sm text-base-content/70">
-                <%= post.published_at.strftime("%B %d, %Y") %>
-              </p>
-            </div>
+            <span class="flex items-center gap-1">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              <%= @post.reading_time %> min read
+            </span>
+            
+            <% if LightningBlog.track_views? %>
+              <span class="flex items-center gap-1">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.639 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.639 0-8.573-3.007-9.963-7.178z" />
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                </svg>
+                <%= pluralize(@post.views_count, 'view') %>
+              </span>
+            <% end %>
+          </div>
+        </div>
+
+        <!-- Post Title -->
+        <h1 class="text-4xl md:text-5xl font-bold text-base-content mb-6 leading-tight">
+          <%= @post.title %>
+        </h1>
+
+        <!-- Post Excerpt -->
+        <% if @post.excerpt.present? %>
+          <div class="text-xl text-base-content/80 mb-8 italic border-l-4 border-primary pl-6">
+            <%= @post.excerpt %>
           </div>
         <% end %>
+
+        <div class="divider"></div>
+
+        <!-- Post Content -->
+        <div class="prose prose-lg max-w-none text-base-content">
+          <%= simple_format(@post.content) %>
+        </div>
+
+        <div class="divider my-8"></div>
+
+        <!-- Post Actions -->
+        <div class="flex flex-wrap justify-between items-center gap-4">
+          <div class="flex items-center gap-2">
+            <span class="text-base-content/70">Share this post:</span>
+            
+            <!-- Social Share Buttons -->
+            <div class="flex gap-2">
+              <%= link_to "https://twitter.com/intent/tweet?text=#{CGI.escape(@post.title)}&url=#{CGI.escape(request.url)}", 
+                  target: "_blank", 
+                  class: "btn btn-circle btn-sm btn-ghost hover:btn-primary" do %>
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M24 4.557c-.883.392-1.832.656-2.828.775 1.017-.609 1.798-1.574 2.165-2.724-.951.564-2.005.974-3.127 1.195-.897-.957-2.178-1.555-3.594-1.555-3.179 0-5.515 2.966-4.797 6.045-4.091-.205-7.719-2.165-10.148-5.144-1.29 2.213-.669 5.108 1.523 6.574-.806-.026-1.566-.247-2.229-.616-.054 2.281 1.581 4.415 3.949 4.89-.693.188-1.452.232-2.224.084.626 1.956 2.444 3.379 4.6 3.419-2.07 1.623-4.678 2.348-7.29 2.04 2.179 1.397 4.768 2.212 7.548 2.212 9.142 0 14.307-7.721 13.995-14.646.962-.695 1.797-1.562 2.457-2.549z"/>
+                </svg>
+              <% end %>
+              
+              <%= link_to "https://www.facebook.com/sharer/sharer.php?u=#{CGI.escape(request.url)}", 
+                  target: "_blank", 
+                  class: "btn btn-circle btn-sm btn-ghost hover:btn-primary" do %>
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+                </svg>
+              <% end %>
+              
+              <%= link_to "https://www.linkedin.com/sharing/share-offsite/?url=#{CGI.escape(request.url)}", 
+                  target: "_blank", 
+                  class: "btn btn-circle btn-sm btn-ghost hover:btn-primary" do %>
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+                </svg>
+              <% end %>
+            </div>
+          </div>
+
+          <!-- Category Link -->
+          <%= link_to lightning_blog.category_path(@post.category), 
+              class: "btn btn-outline btn-primary" do %>
+            More in <%= @post.category.name %>
+          <% end %>
+        </div>
       </div>
-    </section>
-  <% end %>
-</div> 
+    </article>
+
+    <!-- Related Posts -->
+    <% if @related_posts.any? %>
+      <div class="mt-12">
+        <h3 class="text-2xl font-bold text-base-content mb-6">Related Posts</h3>
+        
+        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <% @related_posts.each do |post| %>
+            <div class="card bg-base-100 shadow-lg hover:shadow-xl transition-all duration-300">
+              <% if post.featured_image.attached? %>
+                <figure class="h-32 overflow-hidden">
+                  <%= image_tag post.featured_image, 
+                      class: "w-full h-full object-cover hover:scale-105 transition-transform duration-300",
+                      alt: post.title %>
+                </figure>
+              <% end %>
+              
+              <div class="card-body p-4">
+                <h4 class="card-title text-base text-base-content mb-2">
+                  <%= link_to post.title, lightning_blog.post_path(post), 
+                      class: "hover:text-primary transition-colors" %>
+                </h4>
+                
+                <div class="flex justify-between items-center text-xs text-base-content/60">
+                  <span><%= post.published_at&.strftime("%b %d") %></span>
+                  <span><%= post.reading_time %> min</span>
+                </div>
+              </div>
+            </div>
+          <% end %>
+        </div>
+      </div>
+    <% end %>
+  </div>
+</div>
+
+<!-- Fallback styles for non-Tailwind environments -->
+<style>
+  body:not(.tailwind-loaded) [data-theme] {
+    background-color: #ffffff;
+    color: #1f2937;
+    min-height: 100vh;
+  }
+  
+  body:not(.tailwind-loaded) [data-theme="dark"] {
+    background-color: #1f2937;
+    color: #f9fafb;
+  }
+  
+  body:not(.tailwind-loaded) .prose {
+    line-height: 1.6;
+  }
+  
+  body:not(.tailwind-loaded) .prose h1,
+  body:not(.tailwind-loaded) .prose h2,
+  body:not(.tailwind-loaded) .prose h3 {
+    margin-top: 1.5em;
+    margin-bottom: 0.5em;
+    font-weight: 600;
+  }
+  
+  body:not(.tailwind-loaded) .prose p {
+    margin-bottom: 1em;
+  }
+</style> 

@@ -7,8 +7,7 @@ LightningBlog::Engine.routes.draw do
     end
   end
   
+  # Categories with clean URLs
   resources :categories, only: [:index]
-  
-  # SEO-friendly category routes
   get '/category/:id', to: 'categories#show', as: :category
 end
