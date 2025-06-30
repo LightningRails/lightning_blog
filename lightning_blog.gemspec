@@ -30,6 +30,6 @@ Gem::Specification.new do |spec|
   spec.add_dependency "image_processing", "~> 1.2"
 
   # Optional Tailwind/DaisyUI support
-  spec.add_development_dependency "tailwindcss-rails", "~> 2.0"
+  spec.add_development_dependency "tailwindcss-rails", "~> 4.2"
   spec.add_development_dependency "rspec", "~> 3.0"
 end
