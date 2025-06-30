@@ -19,6 +19,5 @@ class CreateLightningBlogPosts < ActiveRecord::Migration[8.0]
     add_index :lightning_blog_posts, :slug, unique: true
     add_index :lightning_blog_posts, :published
     add_index :lightning_blog_posts, :published_at
-    add_index :lightning_blog_posts, :category_id
   end
 end 
