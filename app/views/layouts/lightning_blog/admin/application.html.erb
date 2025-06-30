@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html data-theme="<%= LightningBlog.theme %>">
+  <head>
+    <title>Lightning Blog Admin</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+    
+    <%= stylesheet_link_tag "lightning_blog/admin/application", "data-turbo-track": "reload" %>
+    <%= javascript_importmap_tags %>
+  </head>
+
+  <body class="bg-base-100">
+    <!-- Admin Navigation -->
+    <div class="navbar bg-primary text-primary-content shadow-lg">
+      <div class="navbar-start">
+        <div class="dropdown">
+          <div tabindex="0" role="button" class="btn btn-ghost lg:hidden">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h8m-8 6h16" />
+            </svg>
+          </div>
+          <ul tabindex="0" class="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52">
+            <li><%= link_to "Dashboard", lightning_blog.admin_root_path, class: "text-base-content" %></li>
+            <li><%= link_to "Posts", lightning_blog.admin_posts_path, class: "text-base-content" %></li>
+            <li><%= link_to "Categories", lightning_blog.admin_categories_path, class: "text-base-content" %></li>
+          </ul>
+        </div>
+        <%= link_to "Lightning Blog Admin", lightning_blog.admin_root_path, class: "btn btn-ghost text-xl" %>
+      </div>
+      
+      <div class="navbar-center hidden lg:flex">
+        <ul class="menu menu-horizontal px-1">
+          <li><%= link_to "Dashboard", lightning_blog.admin_root_path %></li>
+          <li><%= link_to "Posts", lightning_blog.admin_posts_path %></li>
+          <li><%= link_to "Categories", lightning_blog.admin_categories_path %></li>
+        </ul>
+      </div>
+      
+      <div class="navbar-end">
+        <%= link_to "View Blog", lightning_blog.root_path, class: "btn btn-ghost", target: "_blank" %>
+        <% if respond_to?(:current_user) %>
+          <div class="dropdown dropdown-end">
+            <div tabindex="0" role="button" class="btn btn-ghost btn-circle avatar">
+              <div class="w-10 rounded-full bg-base-100 text-base-content flex items-center justify-center">
+                <%= current_user&.email&.first&.upcase || "A" %>
+              </div>
+            </div>
+            <ul tabindex="0" class="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52">
+              <li><%= link_to "Logout", main_app.destroy_user_session_path, method: :delete, class: "text-base-content" %></li>
+            </ul>
+          </div>
+        <% end %>
+      </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="container mx-auto px-4 py-8">
+      <% if notice %>
+        <div class="alert alert-success mb-6">
+          <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+          <span><%= notice %></span>
+        </div>
+      <% end %>
+
+      <% if alert %>
+        <div class="alert alert-error mb-6">
+          <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+          <span><%= alert %></span>
+        </div>
+      <% end %>
+
+      <%= yield %>
+    </div>
+
+    <!-- Fallback styles -->
+    <style>
+      body:not(.tailwind-loaded) {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        line-height: 1.6;
+        color: #333;
+        background-color: #f5f5f5;
+      }
+      
+      body:not(.tailwind-loaded) .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 20px;
+      }
+      
+      body:not(.tailwind-loaded) .navbar {
+        background-color: #3182ce;
+        color: white;
+        padding: 1rem 0;
+        margin-bottom: 2rem;
+      }
+      
+      body:not(.tailwind-loaded) .btn {
+        display: inline-block;
+        padding: 0.5rem 1rem;
+        border-radius: 0.375rem;
+        text-decoration: none;
+        font-weight: 500;
+        border: 1px solid transparent;
+        cursor: pointer;
+      }
+      
+      body:not(.tailwind-loaded) .btn-primary {
+        background-color: #3182ce;
+        color: white;
+      }
+      
+      body:not(.tailwind-loaded) .btn-ghost {
+        background: transparent;
+        color: inherit;
+      }
+      
+      body:not(.tailwind-loaded) .alert {
+        padding: 1rem;
+        border-radius: 0.5rem;
+        margin-bottom: 1rem;
+      }
+      
+      body:not(.tailwind-loaded) .alert-success {
+        background-color: #d4edda;
+        color: #155724;
+        border: 1px solid #c3e6cb;
+      }
+      
+      body:not(.tailwind-loaded) .alert-error {
+        background-color: #f8d7da;
+        color: #721c24;
+        border: 1px solid #f5c6cb;
+      }
+    </style>
+  </body>
+</html> 

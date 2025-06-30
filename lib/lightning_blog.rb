@@ -2,52 +2,26 @@ require "lightning_blog/version"
 require "lightning_blog/engine"
 
 module LightningBlog
-  class Configuration
-    attr_accessor :theme, :posts_per_page, :enable_search, :excerpt_length, :track_views, :force_tailwind_mode
-    
-    def initialize
-      @theme = 'light'
-      @posts_per_page = 10
-      @enable_search = true
-      @excerpt_length = 150
-      @track_views = true
-      @force_tailwind_mode = false
-    end
-  end
+  # Configuration variables
+  mattr_accessor :theme, default: 'light'
+  mattr_accessor :posts_per_page, default: 10
+  mattr_accessor :enable_search, default: true
+  mattr_accessor :excerpt_length, default: 150
+  mattr_accessor :track_views, default: true
+  mattr_accessor :force_tailwind_mode, default: false
+  mattr_accessor :admin_authentication_method, default: nil
   
-  class << self
-    attr_accessor :configuration
-  end
-  
-  def self.configuration
-    @configuration ||= Configuration.new
-  end
-  
+  # Configuration block
   def self.configure
-    yield(configuration)
+    yield self
   end
   
-  def self.theme
-    configuration.theme
-  end
-  
-  def self.posts_per_page
-    configuration.posts_per_page
-  end
-  
+  # Convenience methods
   def self.enable_search?
-    configuration.enable_search
-  end
-  
-  def self.excerpt_length
-    configuration.excerpt_length
+    enable_search
   end
   
   def self.track_views?
-    configuration.track_views
-  end
-  
-  def self.force_tailwind_mode?
-    configuration.force_tailwind_mode
+    track_views
   end
 end

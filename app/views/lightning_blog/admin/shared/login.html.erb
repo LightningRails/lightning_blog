@@ -1,0 +1,35 @@
+<div class="card w-96 bg-base-100 shadow-xl">
+  <div class="card-body">
+    <h2 class="card-title justify-center mb-6">Lightning Blog Admin</h2>
+    
+    <div class="alert alert-info mb-4">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="stroke-current shrink-0 w-6 h-6">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+      </svg>
+      <div>
+        <h3 class="font-bold">Development Mode</h3>
+        <div class="text-xs">Default password: admin123</div>
+      </div>
+    </div>
+    
+    <%= form_with url: request.path, method: :post, local: true do |form| %>
+      <div class="form-control">
+        <label class="label">
+          <span class="label-text">Admin Password</span>
+        </label>
+        <%= form.password_field :admin_password, class: "input input-bordered", placeholder: "Enter admin password" %>
+      </div>
+      
+      <div class="form-control mt-6">
+        <%= form.submit "Login", class: "btn btn-primary" %>
+      </div>
+    <% end %>
+    
+    <div class="divider">OR</div>
+    
+    <div class="text-center text-sm opacity-70">
+      <p>Configure authentication in your initializer:</p>
+      <code class="text-xs">config/initializers/lightning_blog.rb</code>
+    </div>
+  </div>
+</div> 

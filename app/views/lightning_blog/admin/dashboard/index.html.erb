@@ -1,0 +1,126 @@
+<div class="mb-8">
+  <h1 class="text-3xl font-bold text-base-content mb-2">Dashboard</h1>
+  <p class="text-base-content/70">Welcome to Lightning Blog Admin</p>
+</div>
+
+<!-- Stats Cards -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6 mb-8">
+  <div class="stat bg-base-100 shadow-lg rounded-box">
+    <div class="stat-figure text-primary">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="inline-block w-8 h-8 stroke-current">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+      </svg>
+    </div>
+    <div class="stat-title">Total Posts</div>
+    <div class="stat-value text-primary"><%= @stats[:total_posts] %></div>
+  </div>
+
+  <div class="stat bg-base-100 shadow-lg rounded-box">
+    <div class="stat-figure text-success">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="inline-block w-8 h-8 stroke-current">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+      </svg>
+    </div>
+    <div class="stat-title">Published</div>
+    <div class="stat-value text-success"><%= @stats[:published_posts] %></div>
+  </div>
+
+  <div class="stat bg-base-100 shadow-lg rounded-box">
+    <div class="stat-figure text-warning">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="inline-block w-8 h-8 stroke-current">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+      </svg>
+    </div>
+    <div class="stat-title">Drafts</div>
+    <div class="stat-value text-warning"><%= @stats[:draft_posts] %></div>
+  </div>
+
+  <div class="stat bg-base-100 shadow-lg rounded-box">
+    <div class="stat-figure text-info">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="inline-block w-8 h-8 stroke-current">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
+      </svg>
+    </div>
+    <div class="stat-title">Categories</div>
+    <div class="stat-value text-info"><%= @stats[:total_categories] %></div>
+  </div>
+
+  <div class="stat bg-base-100 shadow-lg rounded-box">
+    <div class="stat-figure text-secondary">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="inline-block w-8 h-8 stroke-current">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+      </svg>
+    </div>
+    <div class="stat-title">Total Views</div>
+    <div class="stat-value text-secondary"><%= @stats[:total_views] %></div>
+  </div>
+</div>
+
+<!-- Recent Posts and Popular Posts -->
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+  <!-- Recent Posts -->
+  <div class="card bg-base-100 shadow-lg">
+    <div class="card-body">
+      <h2 class="card-title">Recent Posts</h2>
+      <div class="space-y-4">
+        <% @recent_posts.each do |post| %>
+          <div class="flex items-start gap-3 p-3 hover:bg-base-200 rounded-lg transition-colors">
+            <div class="badge badge-<%= post.published? ? 'success' : 'warning' %> badge-sm">
+              <%= post.published? ? 'Published' : 'Draft' %>
+            </div>
+            <div class="flex-1 min-w-0">
+              <h3 class="font-medium text-base-content truncate">
+                <%= link_to post.title, [:admin, post], class: "hover:text-primary" %>
+              </h3>
+              <p class="text-sm text-base-content/60">
+                <%= post.category&.name %> • <%= post.created_at.strftime("%b %d") %>
+              </p>
+            </div>
+          </div>
+        <% end %>
+      </div>
+      <div class="card-actions">
+        <%= link_to "View All Posts", lightning_blog.admin_posts_path, class: "btn btn-primary btn-sm" %>
+      </div>
+    </div>
+  </div>
+
+  <!-- Popular Posts -->
+  <div class="card bg-base-100 shadow-lg">
+    <div class="card-body">
+      <h2 class="card-title">Popular Posts</h2>
+      <div class="space-y-4">
+        <% @popular_posts.each do |post| %>
+          <div class="flex items-start gap-3 p-3 hover:bg-base-200 rounded-lg transition-colors">
+            <div class="badge badge-ghost badge-sm">
+              <%= pluralize(post.views_count, 'view') %>
+            </div>
+            <div class="flex-1 min-w-0">
+              <h3 class="font-medium text-base-content truncate">
+                <%= link_to post.title, [:admin, post], class: "hover:text-primary" %>
+              </h3>
+              <p class="text-sm text-base-content/60">
+                <%= post.category&.name %> • <%= post.published_at&.strftime("%b %d") %>
+              </p>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Quick Actions -->
+<div class="mt-8">
+  <div class="card bg-base-100 shadow-lg">
+    <div class="card-body">
+      <h2 class="card-title">Quick Actions</h2>
+      <div class="flex flex-wrap gap-4 mt-4">
+        <%= link_to "Create New Post", lightning_blog.new_admin_post_path, class: "btn btn-primary" %>
+        <%= link_to "Create New Category", lightning_blog.new_admin_category_path, class: "btn btn-outline btn-primary" %>
+        <%= link_to "View Blog", lightning_blog.root_path, class: "btn btn-outline", target: "_blank" %>
+      </div>
+    </div>
+  </div>
+</div> 
