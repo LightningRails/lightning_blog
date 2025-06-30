@@ -70,6 +70,7 @@ module LightningBlog
         @has_tailwind = detect_tailwind_setup
         @has_daisyui = detect_daisyui_setup
         @daisyui_method = detect_daisyui_method
+        @has_cloudinary = detect_cloudinary_setup
       end
       
       def select_theme
@@ -154,6 +155,7 @@ module LightningBlog
       def create_initializer
         tailwind_status = @has_tailwind ? "✅ Detected" : "❌ Not detected"
         daisyui_status = @has_daisyui ? "✅ Detected (#{@daisyui_method})" : "❌ Not detected"
+        cloudinary_status = @has_cloudinary ? "✅ Detected" : "❌ Not detected"
         theme_status = @selected_theme || 'light'
         
         create_file "config/initializers/lightning_blog.rb", <<~RUBY
@@ -162,10 +164,14 @@ module LightningBlog
           # Detected setup:
           # - Tailwind CSS: #{tailwind_status}
           # - DaisyUI: #{daisyui_status}
+          # - Cloudinary: #{cloudinary_status}
           # - Selected Theme: #{theme_status}
           #
           # Lightning Blog works with any Rails application, with enhanced styling 
           # when Tailwind CSS and DaisyUI are available.
+          #
+          # For image hosting with Cloudinary, add 'cloudinary' to your Gemfile
+          # and configure your Cloudinary credentials.
           #
           # Setup following: https://daisyui.com/docs/install/rails/
           
@@ -218,6 +224,19 @@ module LightningBlog
           say "📝 Your app will use Lightning Blog's fallback styles"
           say "   For enhanced styling, consider adding Tailwind CSS + DaisyUI:"
           say "   https://daisyui.com/docs/install/rails/"
+        end
+        
+        if @has_cloudinary
+          say ""
+          say "☁️  Excellent! Cloudinary detected for image hosting"
+          say "   Lightning Blog will use Cloudinary for image storage and delivery."
+        else
+          say ""
+          say "📸 For production image hosting, consider adding Cloudinary:"
+          say "   1. Add 'cloudinary' to your Gemfile"
+          say "   2. Run 'bundle install'"
+          say "   3. Set up your Cloudinary credentials (CLOUDINARY_URL)"
+          say "   4. Configure Active Storage to use Cloudinary"
         end
         
         say ""
@@ -341,6 +360,23 @@ module LightningBlog
       def gemfile_has_gem?(gem_name)
         return false unless File.exist?('Gemfile')
         File.read('Gemfile').include?(gem_name)
+      end
+      
+      def detect_cloudinary_setup
+        # Check for cloudinary gem
+        return true if gemfile_has_gem?('cloudinary')
+        
+        # Check for Active Storage Cloudinary configuration
+        config_files = [
+          'config/storage.yml',
+          'config/environments/production.rb',
+          'config/environments/development.rb'
+        ]
+        
+        config_files.any? do |file|
+          next unless File.exist?(file)
+          File.read(file).include?('cloudinary')
+        end
       end
     end
   end

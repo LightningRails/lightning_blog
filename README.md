@@ -195,6 +195,109 @@ post = LightningBlog::Post.create!(
 )
 ```
 
+## Image Hosting with Cloudinary
+
+Lightning Blog supports **Cloudinary** for professional image hosting and delivery. Cloudinary provides automatic image optimization, transformations, and CDN delivery for better performance.
+
+### Quick Setup
+
+1. **Add Cloudinary to your Gemfile**:
+```ruby
+gem 'cloudinary'
+```
+
+2. **Install the gem**:
+```bash
+bundle install
+```
+
+3. **Configure Active Storage** to use Cloudinary in your `config/storage.yml`:
+```yaml
+cloudinary:
+  service: Cloudinary
+  # Your credentials will be loaded from CLOUDINARY_URL env variable
+  # or set them here directly:
+  # cloud_name: your_cloud_name
+  # api_key: your_api_key
+  # api_secret: your_api_secret
+```
+
+4. **Set Cloudinary as your Active Storage service** in the appropriate environment file:
+```ruby
+# config/environments/production.rb
+config.active_storage.variant_processor = :image_processing
+config.active_storage.service = :cloudinary
+
+# config/environments/development.rb (optional)
+config.active_storage.service = :cloudinary
+```
+
+5. **Get your Cloudinary credentials**:
+   - Sign up at [cloudinary.com](https://cloudinary.com/)
+   - Copy your `CLOUDINARY_URL` from the dashboard
+   - Add it to your environment variables or `.env` file:
+```
+CLOUDINARY_URL=cloudinary://api_key:api_secret@cloud_name
+```
+
+### Why Use Cloudinary?
+
+- ✅ **Automatic optimization** - Images served in optimal format and size
+- ✅ **Global CDN delivery** - Fast loading worldwide
+- ✅ **Real-time transformations** - Resize, crop, format images on-the-fly
+- ✅ **Responsive images** - Automatic device-appropriate sizing
+- ✅ **SEO benefits** - Faster page loads improve search rankings
+
+### Usage with Lightning Blog
+
+Once configured, Lightning Blog will automatically use Cloudinary for:
+
+- **Featured images** on blog posts
+- **Image attachments** in post content
+- **Category images** (if you add them)
+- **User avatars** (if you extend the models)
+
+```ruby
+# Example: Creating a post with featured image
+post = LightningBlog::Post.create!(
+  title: "My Post with Image",
+  content: "Post content...",
+  category: category,
+  published: true
+)
+
+# Attach image from file upload
+post.featured_image.attach(params[:featured_image])
+
+# Or attach from URL
+post.featured_image.attach(
+  io: URI.open('https://example.com/image.jpg'),
+  filename: 'featured-image.jpg'
+)
+```
+
+### Advanced Cloudinary Features
+
+Lightning Blog views are optimized for Cloudinary transformations:
+
+```erb
+<!-- Automatic responsive images -->
+<%= image_tag post.featured_image.variant(resize: "800x600"), 
+    class: "responsive-image",
+    alt: post.title %>
+
+<!-- Multiple sizes for different devices -->
+<%= image_tag post.featured_image, 
+    sizes: "100vw",
+    srcset: [
+      "#{url_for(post.featured_image.variant(resize: '400x'))} 400w",
+      "#{url_for(post.featured_image.variant(resize: '800x'))} 800w",
+      "#{url_for(post.featured_image.variant(resize: '1200x'))} 1200w"
+    ].join(', ') %>
+```
+
+> **Note**: Lightning Blog works perfectly without Cloudinary using Rails' default Active Storage with local files. Cloudinary is recommended for production applications requiring professional image handling.
+
 ## Customization
 
 ### 🎨 **For Tailwind/DaisyUI Users**

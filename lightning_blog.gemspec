@@ -29,6 +29,9 @@ Gem::Specification.new do |spec|
   spec.add_dependency "rails", ">= 7.0.0", "< 9.0"
   spec.add_dependency "image_processing", "~> 1.2"
 
+  # Optional Cloudinary support for image hosting
+  # Add 'cloudinary' to your Gemfile for cloud image storage
+  
   # Optional Tailwind/DaisyUI support
   spec.add_development_dependency "tailwindcss-rails", "~> 2.0"
   spec.add_development_dependency "rspec", "~> 3.0"

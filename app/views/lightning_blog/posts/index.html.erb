@@ -67,7 +67,7 @@
           <div class="grid md:grid-cols-2 gap-6">
             <% @posts.each do |post| %>
               <div class="card bg-base-100 shadow-xl hover:shadow-2xl transition-all duration-300">
-                <% if post.featured_image.attached? %>
+                <% if post.featured_image&.attached? %>
                   <figure class="h-48 overflow-hidden">
                     <%= image_tag post.featured_image, 
                         class: "w-full h-full object-cover hover:scale-105 transition-transform duration-300",
