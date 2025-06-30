@@ -46,6 +46,26 @@ module LightningBlog
         end
       end
       
+      def add_assets_to_manifest
+        manifest_path = 'app/assets/config/manifest.js'
+        
+        if File.exist?(manifest_path)
+          manifest_content = File.read(manifest_path)
+          asset_declaration = "//= link lightning_blog/application.css"
+          
+          unless manifest_content.include?(asset_declaration)
+            append_to_file manifest_path, "\n#{asset_declaration}\n"
+            say "✅ Added Lightning Blog assets to manifest.js"
+          else
+            say "⏭️  Lightning Blog assets already in manifest.js"
+          end
+        else
+          say "⚠️  Warning: app/assets/config/manifest.js not found"
+          say "   Please add this line to your manifest.js manually:"
+          say "   //= link lightning_blog/application.css"
+        end
+      end
+      
       def check_tailwind_daisyui_setup
         @has_tailwind = detect_tailwind_setup
         @has_daisyui = detect_daisyui_setup
@@ -134,13 +154,17 @@ module LightningBlog
         say ""
         say "Next steps:"
         say ""
-        say "1. Run the migrations:"
-        say "   $ rails db:migrate"
-        say ""
-        say "2. (Optional) Seed sample data:"
-        say "   $ rails db:seed"
-        say ""
-        say "3. Visit your blog at: http://localhost:3000/blog"
+        unless @tables_exist
+          say "1. Run the migrations:"
+          say "   $ rails db:migrate"
+          say ""
+          say "2. (Optional) Seed sample data:"
+          say "   $ rails db:seed"
+          say ""
+          say "3. Restart your server and visit: http://localhost:3000/blog"
+        else
+          say "1. Restart your server and visit: http://localhost:3000/blog"
+        end
         say ""
         
         unless @has_tailwind && @has_daisyui
