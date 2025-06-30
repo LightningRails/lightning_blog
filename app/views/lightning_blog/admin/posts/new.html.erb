@@ -1,0 +1,266 @@
+<div class="max-w-4xl mx-auto">
+  <!-- Header -->
+  <div class="mb-8">
+    <div class="flex items-center gap-4 mb-4">
+      <%= link_to lightning_blog.admin_posts_path, class: "btn btn-ghost btn-circle" do %>
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
+        </svg>
+      <% end %>
+      <div>
+        <h1 class="text-3xl font-bold text-base-content">Create New Post</h1>
+        <p class="text-base-content/70">Write and publish your blog post</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Form Card -->
+  <div class="card bg-base-100 shadow-lg border border-base-200">
+    <div class="card-body p-8">
+      <%= form_with model: [:admin, @post], local: true, multipart: true, class: "space-y-8" do |form| %>
+        <!-- Error Messages -->
+        <% if @post.errors.any? %>
+          <div class="alert alert-error shadow-lg">
+            <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current flex-shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <div>
+              <h3 class="font-bold">Please fix the following errors:</h3>
+              <div class="text-sm">
+                <ul class="list-disc list-inside mt-2">
+                  <% @post.errors.full_messages.each do |message| %>
+                    <li><%= message %></li>
+                  <% end %>
+                </ul>
+              </div>
+            </div>
+          </div>
+        <% end %>
+
+        <!-- Main Content Section -->
+        <div class="grid lg:grid-cols-3 gap-8">
+          <!-- Main Form -->
+          <div class="lg:col-span-2 space-y-6">
+            <!-- Title -->
+            <div class="form-control">
+              <%= form.label :title, class: "label label-text font-semibold text-base" %>
+              <%= form.text_field :title, 
+                  class: "input input-bordered input-lg w-full text-2xl font-bold placeholder:text-base-content/30", 
+                  placeholder: "Enter your post title...",
+                  required: true %>
+              <div class="label">
+                <span class="label-text-alt text-base-content/60">This will be the main headline of your post</span>
+              </div>
+            </div>
+
+            <!-- Slug -->
+            <div class="form-control">
+              <%= form.label :slug, class: "label label-text font-semibold" %>
+              <%= form.text_field :slug, 
+                  class: "input input-bordered w-full font-mono text-sm", 
+                  placeholder: "auto-generated-from-title" %>
+              <div class="label">
+                <span class="label-text-alt text-base-content/60">URL-friendly version of the title (auto-generated if left blank)</span>
+              </div>
+            </div>
+
+            <!-- Excerpt -->
+            <div class="form-control">
+              <%= form.label :excerpt, class: "label label-text font-semibold" %>
+              <%= form.text_area :excerpt, 
+                  rows: 3,
+                  class: "textarea textarea-bordered w-full text-lg leading-relaxed", 
+                  placeholder: "Write a brief excerpt that will appear in post previews..." %>
+              <div class="label">
+                <span class="label-text-alt text-base-content/60">A short summary that appears in post listings and search results</span>
+              </div>
+            </div>
+
+            <!-- Content -->
+            <div class="form-control">
+              <%= form.label :content, class: "label label-text font-semibold" %>
+              <%= form.text_area :content, 
+                  rows: 20,
+                  class: "textarea textarea-bordered w-full text-base leading-relaxed", 
+                  placeholder: "Write your post content here...\n\nYou can use line breaks to separate paragraphs.",
+                  required: true %>
+              <div class="label">
+                <span class="label-text-alt text-base-content/60">The main content of your post. Use line breaks to separate paragraphs.</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Sidebar -->
+          <div class="lg:col-span-1 space-y-6">
+            <!-- Publish Settings -->
+            <div class="card bg-base-200/50 border border-base-300">
+              <div class="card-body p-6">
+                <h3 class="text-lg font-semibold text-base-content mb-4">Publish Settings</h3>
+                
+                <!-- Published Toggle -->
+                <div class="form-control">
+                  <label class="label cursor-pointer justify-start gap-3">
+                    <%= form.check_box :published, class: "toggle toggle-primary" %>
+                    <div>
+                      <span class="label-text font-medium">Publish immediately</span>
+                      <p class="text-xs text-base-content/60 mt-1">Make this post visible to readers</p>
+                    </div>
+                  </label>
+                </div>
+              </div>
+            </div>
+
+            <!-- Category -->
+            <div class="card bg-base-200/50 border border-base-300">
+              <div class="card-body p-6">
+                <h3 class="text-lg font-semibold text-base-content mb-4">Category</h3>
+                
+                <div class="form-control">
+                  <%= form.select :category_id, 
+                      options_from_collection_for_select(@categories, :id, :name, @post.category_id), 
+                      { include_blank: "Select a category..." }, 
+                      { class: "select select-bordered w-full" } %>
+                  <div class="label">
+                    <span class="label-text-alt text-base-content/60">Choose the most relevant category</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Featured Image -->
+            <div class="card bg-base-200/50 border border-base-300">
+              <div class="card-body p-6">
+                <h3 class="text-lg font-semibold text-base-content mb-4">Featured Image</h3>
+                
+                <div class="form-control">
+                  <%= form.file_field :featured_image, 
+                      class: "file-input file-input-bordered w-full",
+                      accept: "image/*" %>
+                  <div class="label">
+                    <span class="label-text-alt text-base-content/60">Upload an image for your post (JPG, PNG)</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- SEO Settings -->
+            <div class="card bg-base-200/50 border border-base-300">
+              <div class="card-body p-6">
+                <h3 class="text-lg font-semibold text-base-content mb-4">SEO Settings</h3>
+                
+                <div class="space-y-4">
+                  <!-- Meta Title -->
+                  <div class="form-control">
+                    <%= form.label :meta_title, "Meta Title", class: "label label-text font-medium" %>
+                    <%= form.text_field :meta_title, 
+                        class: "input input-bordered input-sm w-full", 
+                        placeholder: "Custom SEO title (optional)" %>
+                  </div>
+
+                  <!-- Meta Description -->
+                  <div class="form-control">
+                    <%= form.label :meta_description, "Meta Description", class: "label label-text font-medium" %>
+                    <%= form.text_area :meta_description, 
+                        rows: 3,
+                        class: "textarea textarea-bordered textarea-sm w-full", 
+                        placeholder: "Brief description for search engines (optional)" %>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="card bg-base-200/30 border border-base-200">
+          <div class="card-body p-6">
+            <div class="flex flex-wrap gap-4 justify-between items-center">
+              <div class="flex gap-3">
+                <%= form.submit "Publish Post", class: "btn btn-primary btn-lg" %>
+                <%= form.submit "Save as Draft", name: "draft", class: "btn btn-outline btn-lg" %>
+              </div>
+              
+              <div class="flex gap-3">
+                <%= link_to "Preview", "#", class: "btn btn-ghost", target: "_blank", 
+                    onclick: "return false;", title: "Preview will be available after saving" %>
+                <%= link_to "Cancel", lightning_blog.admin_posts_path, class: "btn btn-ghost" %>
+              </div>
+            </div>
+          </div>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div>
+
+<!-- Enhanced Form Styles -->
+<style>
+  body:not(.tailwind-loaded) .form-control {
+    margin-bottom: 1.5rem;
+  }
+  
+  body:not(.tailwind-loaded) .label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+    color: #374151;
+  }
+  
+  body:not(.tailwind-loaded) .input,
+  body:not(.tailwind-loaded) .textarea,
+  body:not(.tailwind-loaded) .select {
+    width: 100%;
+    padding: 0.75rem;
+    border: 2px solid #d1d5db;
+    border-radius: 0.5rem;
+    font-size: 1rem;
+    transition: border-color 0.2s;
+  }
+  
+  body:not(.tailwind-loaded) .input:focus,
+  body:not(.tailwind-loaded) .textarea:focus,
+  body:not(.tailwind-loaded) .select:focus {
+    outline: none;
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+  }
+  
+  body:not(.tailwind-loaded) .textarea {
+    resize: vertical;
+    font-family: inherit;
+    line-height: 1.6;
+  }
+  
+  body:not(.tailwind-loaded) .toggle {
+    width: 3rem;
+    height: 1.5rem;
+    background-color: #d1d5db;
+    border-radius: 1rem;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.2s;
+  }
+  
+  body:not(.tailwind-loaded) .toggle:checked {
+    background-color: #3b82f6;
+  }
+  
+  body:not(.tailwind-loaded) .file-input {
+    border: 2px dashed #d1d5db;
+    padding: 1rem;
+    border-radius: 0.5rem;
+    background: #f9fafb;
+  }
+  
+  body:not(.tailwind-loaded) .card {
+    background: white;
+    border-radius: 0.75rem;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    border: 1px solid #e5e7eb;
+    margin-bottom: 1.5rem;
+  }
+  
+  body:not(.tailwind-loaded) .card-body {
+    padding: 1.5rem;
+  }
+</style> 

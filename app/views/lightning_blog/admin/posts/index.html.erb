@@ -1,152 +1,430 @@
-<div class="flex justify-between items-center mb-8">
-  <div>
-    <h1 class="text-3xl font-bold text-base-content mb-2">Posts</h1>
-    <p class="text-base-content/70">Manage your blog posts</p>
+<div class="max-w-7xl mx-auto">
+  <!-- Header Section -->
+  <div class="mb-8">
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <div>
+        <h1 class="text-4xl font-bold text-base-content mb-2">Posts</h1>
+        <p class="text-base-content/70 text-lg">Manage and organize your blog content</p>
+      </div>
+      <%= link_to lightning_blog.new_admin_post_path, class: "btn btn-primary btn-lg gap-2" do %>
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+        </svg>
+        Create New Post
+      <% end %>
+    </div>
   </div>
-  <%= link_to "Create New Post", lightning_blog.new_admin_post_path, class: "btn btn-primary" %>
-</div>
 
-<!-- Filters -->
-<div class="card bg-base-100 shadow-lg mb-6">
-  <div class="card-body">
-    <%= form_with url: lightning_blog.admin_posts_path, method: :get, local: true, class: "flex flex-wrap gap-4 items-end" do |form| %>
-      <div class="form-control">
-        <label class="label">
-          <span class="label-text">Search</span>
-        </label>
-        <%= form.text_field :search, value: params[:search], placeholder: "Search posts...", class: "input input-bordered" %>
-      </div>
-      
-      <div class="form-control">
-        <label class="label">
-          <span class="label-text">Category</span>
-        </label>
-        <%= form.select :category_id, options_from_collection_for_select(@categories, :id, :name, params[:category_id]), 
-            { include_blank: "All categories" }, 
-            { class: "select select-bordered" } %>
-      </div>
-      
-      <div class="form-control">
-        <label class="label">
-          <span class="label-text">Status</span>
-        </label>
-        <%= form.select :status, [['All', ''], ['Published', 'published'], ['Draft', 'draft']], 
-            { selected: params[:status] }, 
-            { class: "select select-bordered" } %>
-      </div>
-      
-      <div class="form-control">
-        <%= form.submit "Filter", class: "btn btn-outline" %>
-        <%= link_to "Clear", lightning_blog.admin_posts_path, class: "btn btn-ghost" %>
-      </div>
-    <% end %>
+  <!-- Stats Overview -->
+  <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+    <div class="stat bg-base-100 border border-base-200 rounded-2xl shadow-lg">
+      <div class="stat-title text-base-content/60">Total Posts</div>
+      <div class="stat-value text-primary"><%= @posts.count %></div>
+      <div class="stat-desc text-base-content/50">All time</div>
+    </div>
+    
+    <div class="stat bg-base-100 border border-base-200 rounded-2xl shadow-lg">
+      <div class="stat-title text-base-content/60">Published</div>
+      <div class="stat-value text-success"><%= @posts.select(&:published?).count %></div>
+      <div class="stat-desc text-base-content/50">Live posts</div>
+    </div>
+    
+    <div class="stat bg-base-100 border border-base-200 rounded-2xl shadow-lg">
+      <div class="stat-title text-base-content/60">Drafts</div>
+      <div class="stat-value text-warning"><%= @posts.reject(&:published?).count %></div>
+      <div class="stat-desc text-base-content/50">Unpublished</div>
+    </div>
+    
+    <div class="stat bg-base-100 border border-base-200 rounded-2xl shadow-lg">
+      <div class="stat-title text-base-content/60">Total Views</div>
+      <div class="stat-value text-info"><%= @posts.sum(&:views_count) %></div>
+      <div class="stat-desc text-base-content/50">All posts</div>
+    </div>
   </div>
-</div>
 
-<!-- Posts Table -->
-<div class="card bg-base-100 shadow-lg">
-  <div class="card-body p-0">
-    <div class="overflow-x-auto">
-      <table class="table table-zebra">
-        <thead>
-          <tr>
-            <th>Title</th>
-            <th>Category</th>
-            <th>Status</th>
-            <th class="hidden md:table-cell">Views</th>
-            <th class="hidden lg:table-cell">Created</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          <% @posts.each do |post| %>
-            <tr>
-              <td>
-                <div class="flex items-center space-x-3">
-                  <div>
-                    <div class="font-bold text-base-content">
-                      <%= link_to post.title, [:admin, post], class: "hover:text-primary" %>
+  <!-- Filters Card -->
+  <div class="card bg-base-100 shadow-lg border border-base-200 mb-8">
+    <div class="card-body p-6">
+      <div class="flex items-center gap-3 mb-4">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 text-primary">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M12 3c2.755 0 5.455.232 8.083.678.533.09.917.556.917 1.096v1.044a2.25 2.25 0 0 1-.659 1.591l-5.432 5.432a2.25 2.25 0 0 0-.659 1.591v5.721a2.25 2.25 0 0 1-1.225 2.007l-2.25 1.125a.75.75 0 0 1-1.07-.691V14.25a2.25 2.25 0 0 0-.659-1.591L2.659 7.227A2.25 2.25 0 0 1 2 5.636V4.592c0-.54.384-1.006.917-1.096A48.96 48.96 0 0 1 12 3Z" />
+        </svg>
+        <h3 class="text-lg font-semibold text-base-content">Filter & Search</h3>
+      </div>
+      
+      <%= form_with url: lightning_blog.admin_posts_path, method: :get, local: true, class: "grid grid-cols-1 md:grid-cols-4 gap-4" do |form| %>
+        <div class="form-control">
+          <%= form.text_field :search, 
+              value: params[:search], 
+              placeholder: "Search posts by title or content...", 
+              class: "input input-bordered w-full" %>
+        </div>
+        
+        <div class="form-control">
+          <%= form.select :category_id, 
+              options_from_collection_for_select(@categories, :id, :name, params[:category_id]), 
+              { include_blank: "All categories" }, 
+              { class: "select select-bordered w-full" } %>
+        </div>
+        
+        <div class="form-control">
+          <%= form.select :status, 
+              [['All posts', ''], ['Published', 'published'], ['Drafts', 'draft']], 
+              { selected: params[:status] }, 
+              { class: "select select-bordered w-full" } %>
+        </div>
+        
+        <div class="flex gap-2">
+          <%= form.submit "Apply Filters", class: "btn btn-primary flex-1" %>
+          <%= link_to "Clear", lightning_blog.admin_posts_path, class: "btn btn-ghost" %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+
+  <!-- Posts Grid/List -->
+  <% if @posts.any? %>
+    <div class="card bg-base-100 shadow-lg border border-base-200">
+      <div class="card-body p-0">
+        <!-- Mobile View -->
+        <div class="block lg:hidden">
+          <% @posts.each_with_index do |post, index| %>
+            <div class="border-b border-base-200 last:border-b-0">
+              <div class="p-6">
+                <div class="flex justify-between items-start gap-4">
+                  <div class="flex-1 min-w-0">
+                    <div class="flex items-center gap-2 mb-2">
+                      <div class="badge badge-<%= post.published? ? 'success' : 'warning' %> badge-sm">
+                        <%= post.published? ? 'Published' : 'Draft' %>
+                      </div>
+                      <% if post.category %>
+                        <div class="badge badge-outline badge-sm">
+                          <%= post.category.name %>
+                        </div>
+                      <% end %>
                     </div>
-                    <div class="text-sm opacity-50 truncate max-w-xs">
-                      <%= truncate(post.excerpt.presence || strip_tags(post.content), length: 60) %>
+                    
+                    <h3 class="font-bold text-base-content text-lg leading-tight mb-2">
+                      <%= link_to post.title, [:admin, post], class: "hover:text-primary transition-colors" %>
+                    </h3>
+                    
+                    <p class="text-sm text-base-content/70 mb-3 line-clamp-2">
+                      <%= truncate(post.excerpt.presence || strip_tags(post.content), length: 100) %>
+                    </p>
+                    
+                    <div class="flex items-center gap-4 text-xs text-base-content/60 mb-4">
+                      <span><%= pluralize(post.views_count, 'view') %></span>
+                      <span><%= post.created_at.strftime("%b %d, %Y") %></span>
                     </div>
                   </div>
                 </div>
-              </td>
-              <td>
-                <% if post.category %>
-                  <span class="badge badge-outline"><%= post.category.name %></span>
-                <% else %>
-                  <span class="text-base-content/40">No category</span>
-                <% end %>
-              </td>
-              <td>
-                <span class="badge badge-<%= post.published? ? 'success' : 'warning' %>">
-                  <%= post.published? ? 'Published' : 'Draft' %>
-                </span>
-              </td>
-              <td class="hidden md:table-cell">
-                <span class="text-base-content/60"><%= pluralize(post.views_count, 'view') %></span>
-              </td>
-              <td class="hidden lg:table-cell">
-                <span class="text-base-content/60"><%= post.created_at.strftime("%b %d, %Y") %></span>
-              </td>
-              <td>
+                
+                <!-- Actions -->
                 <div class="flex gap-2">
-                  <%= link_to [:admin, post], class: "btn btn-ghost btn-xs" do %>
+                  <%= link_to [:admin, post], class: "btn btn-ghost btn-sm" do %>
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="w-4 h-4 stroke-current">
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
                     </svg>
                   <% end %>
                   
-                  <%= link_to [:edit, :admin, post], class: "btn btn-ghost btn-xs" do %>
+                  <%= link_to [:edit, :admin, post], class: "btn btn-ghost btn-sm" do %>
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="w-4 h-4 stroke-current">
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
                     </svg>
+                    Edit
                   <% end %>
                   
-                  <%= link_to toggle_published_admin_post_path(post), method: :patch, class: "btn btn-ghost btn-xs" do %>
-                    <% if post.published? %>
-                      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="w-4 h-4 stroke-current">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.878 9.878L3 3m6.878 6.878L21 21"></path>
-                      </svg>
-                    <% else %>
-                      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="w-4 h-4 stroke-current">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
-                      </svg>
-                    <% end %>
-                  <% end %>
-                  
-                  <%= link_to [:admin, post], method: :delete, 
-                      confirm: "Are you sure you want to delete this post?", 
-                      class: "btn btn-ghost btn-xs text-error" do %>
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="w-4 h-4 stroke-current">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
-                    </svg>
+                  <%= link_to toggle_published_admin_post_path(post), method: :patch, class: "btn btn-ghost btn-sm" do %>
+                    <%= post.published? ? 'Unpublish' : 'Publish' %>
                   <% end %>
                 </div>
-              </td>
-            </tr>
+              </div>
+            </div>
           <% end %>
-        </tbody>
-      </table>
+        </div>
+
+        <!-- Desktop View -->
+        <div class="hidden lg:block overflow-x-auto">
+          <table class="table">
+            <thead class="bg-base-200">
+              <tr>
+                <th class="font-semibold text-base-content">Post</th>
+                <th class="font-semibold text-base-content">Category</th>
+                <th class="font-semibold text-base-content">Status</th>
+                <th class="font-semibold text-base-content">Performance</th>
+                <th class="font-semibold text-base-content">Date</th>
+                <th class="font-semibold text-base-content">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% @posts.each do |post| %>
+                <tr class="hover:bg-base-200/50 transition-colors">
+                  <td class="py-4">
+                    <div class="flex items-start gap-4">
+                      <% if post.featured_image&.attached? %>
+                        <div class="avatar">
+                          <div class="w-16 h-12 rounded-lg">
+                            <%= image_tag post.featured_image, class: "w-full h-full object-cover" %>
+                          </div>
+                        </div>
+                      <% else %>
+                        <div class="w-16 h-12 bg-base-300 rounded-lg flex items-center justify-center">
+                          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 text-base-content/40">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="m2.25 15.75 5.159-5.159a2.25 2.25 0 0 1 3.182 0l5.159 5.159m-1.5-1.5 1.409-1.409a2.25 2.25 0 0 1 3.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 0 0 1.5-1.5V6a1.5 1.5 0 0 0-1.5-1.5H3.75A1.5 1.5 0 0 0 2.25 6v12a1.5 1.5 0 0 0 1.5 1.5Zm10.5-11.25h.008v.008h-.008V8.25Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" />
+                          </svg>
+                        </div>
+                      <% end %>
+                      
+                      <div class="flex-1 min-w-0">
+                        <h3 class="font-bold text-base-content hover:text-primary transition-colors cursor-pointer">
+                          <%= link_to post.title, [:admin, post] %>
+                        </h3>
+                        <p class="text-sm text-base-content/60 truncate mt-1 max-w-md">
+                          <%= truncate(post.excerpt.presence || strip_tags(post.content), length: 80) %>
+                        </p>
+                      </div>
+                    </div>
+                  </td>
+                  
+                  <td class="py-4">
+                    <% if post.category %>
+                      <div class="badge badge-outline badge-sm">
+                        <%= post.category.name %>
+                      </div>
+                    <% else %>
+                      <span class="text-base-content/40 text-sm">No category</span>
+                    <% end %>
+                  </td>
+                  
+                  <td class="py-4">
+                    <div class="badge badge-<%= post.published? ? 'success' : 'warning' %>">
+                      <%= post.published? ? 'Published' : 'Draft' %>
+                    </div>
+                  </td>
+                  
+                  <td class="py-4">
+                    <div class="text-sm">
+                      <div class="font-medium text-base-content">
+                        <%= pluralize(post.views_count, 'view') %>
+                      </div>
+                      <div class="text-base-content/60">
+                        <%= post.reading_time %> min read
+                      </div>
+                    </div>
+                  </td>
+                  
+                  <td class="py-4">
+                    <div class="text-sm text-base-content/70">
+                      <%= post.created_at.strftime("%b %d, %Y") %>
+                    </div>
+                  </td>
+                  
+                  <td class="py-4">
+                    <div class="dropdown dropdown-end">
+                      <div tabindex="0" role="button" class="btn btn-ghost btn-circle btn-sm">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
+                          <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.75a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5ZM12 12.75a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5ZM12 18.75a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5Z" />
+                        </svg>
+                      </div>
+                      <ul tabindex="0" class="dropdown-content z-[1] menu p-2 shadow-lg bg-base-100 rounded-box w-52 border border-base-200">
+                        <li>
+                          <%= link_to [:admin, post], class: "flex items-center gap-3" do %>
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="w-4 h-4 stroke-current">
+                              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                            </svg>
+                            View Post
+                          <% end %>
+                        </li>
+                        <li>
+                          <%= link_to [:edit, :admin, post], class: "flex items-center gap-3" do %>
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="w-4 h-4 stroke-current">
+                              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                            </svg>
+                            Edit Post
+                          <% end %>
+                        </li>
+                        <li>
+                          <%= link_to lightning_blog.post_path(post), target: "_blank", class: "flex items-center gap-3" do %>
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
+                              <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 6H5.25A2.25 2.25 0 0 0 3 8.25v10.5A2.25 2.25 0 0 0 5.25 21h10.5A2.25 2.25 0 0 0 18 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25" />
+                            </svg>
+                            View Live
+                          <% end %>
+                        </li>
+                        <div class="divider my-1"></div>
+                        <li>
+                          <%= link_to toggle_published_admin_post_path(post), method: :patch, class: "flex items-center gap-3" do %>
+                            <% if post.published? %>
+                              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="w-4 h-4 stroke-current">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.878 9.878L3 3m6.878 6.878L21 21"></path>
+                              </svg>
+                              Unpublish
+                            <% else %>
+                              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="w-4 h-4 stroke-current">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                              </svg>
+                              Publish
+                            <% end %>
+                          <% end %>
+                        </li>
+                        <li>
+                          <%= link_to [:admin, post], method: :delete, 
+                              confirm: "Are you sure you want to delete this post? This action cannot be undone.", 
+                              class: "flex items-center gap-3 text-error hover:bg-error hover:text-error-content" do %>
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="w-4 h-4 stroke-current">
+                              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                            </svg>
+                            Delete Post
+                          <% end %>
+                        </li>
+                      </ul>
+                    </div>
+                  </td>
+                </tr>
+              <% end %>
+            </tbody>
+          </table>
+        </div>
+      </div>
     </div>
-  </div>
+  <% else %>
+    <!-- Empty State -->
+    <div class="card bg-base-100 shadow-lg border border-base-200">
+      <div class="card-body text-center py-16">
+        <div class="text-6xl mb-6">✍️</div>
+        <h3 class="text-2xl font-bold text-base-content mb-4">
+          <% if params[:search].present? || params[:category_id].present? || params[:status].present? %>
+            No posts match your filters
+          <% else %>
+            No posts yet
+          <% end %>
+        </h3>
+        <p class="text-base-content/70 mb-8 max-w-md mx-auto">
+          <% if params[:search].present? || params[:category_id].present? || params[:status].present? %>
+            Try adjusting your search criteria or browse all posts to see more content.
+          <% else %>
+            Get started by creating your first blog post. Share your thoughts and engage with your audience.
+          <% end %>
+        </p>
+        <div class="flex gap-3 justify-center">
+          <% if params[:search].present? || params[:category_id].present? || params[:status].present? %>
+            <%= link_to "Clear filters", lightning_blog.admin_posts_path, class: "btn btn-outline btn-lg" %>
+          <% end %>
+          <%= link_to lightning_blog.new_admin_post_path, class: "btn btn-primary btn-lg gap-2" do %>
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+            </svg>
+            Create Your First Post
+          <% end %>
+        </div>
+      </div>
+    </div>
+  <% end %>
 </div>
 
-<% if @posts.empty? %>
-  <div class="text-center py-12">
-    <div class="text-6xl mb-4">📝</div>
-    <h3 class="text-xl font-semibold text-base-content mb-2">No posts found</h3>
-    <p class="text-base-content/60 mb-6">
-      <% if params[:search].present? || params[:category_id].present? || params[:status].present? %>
-        Try adjusting your filters to see more posts.
-      <% else %>
-        Get started by creating your first blog post.
-      <% end %>
-    </p>
-    <%= link_to "Create New Post", lightning_blog.new_admin_post_path, class: "btn btn-primary" %>
-  </div>
-<% end %> 
+<!-- Enhanced Table Styles -->
+<style>
+  body:not(.tailwind-loaded) .dropdown {
+    position: relative;
+  }
+  
+  body:not(.tailwind-loaded) .dropdown-content {
+    display: none;
+    position: absolute;
+    right: 0;
+    top: 100%;
+    background: white;
+    border: 1px solid #e5e7eb;
+    border-radius: 0.5rem;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+    min-width: 200px;
+  }
+  
+  body:not(.tailwind-loaded) .dropdown:focus-within .dropdown-content {
+    display: block;
+  }
+  
+  body:not(.tailwind-loaded) .table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  body:not(.tailwind-loaded) .table th,
+  body:not(.tailwind-loaded) .table td {
+    padding: 1rem;
+    text-align: left;
+    border-bottom: 1px solid #e5e7eb;
+  }
+  
+  body:not(.tailwind-loaded) .table th {
+    background-color: #f9fafb;
+    font-weight: 600;
+    color: #374151;
+  }
+  
+  body:not(.tailwind-loaded) .table tr:hover {
+    background-color: #f9fafb;
+  }
+  
+  body:not(.tailwind-loaded) .avatar {
+    width: 4rem;
+    height: 3rem;
+    border-radius: 0.5rem;
+    overflow: hidden;
+  }
+  
+  body:not(.tailwind-loaded) .badge {
+    display: inline-block;
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.25rem;
+    font-size: 0.75rem;
+    font-weight: 500;
+    text-align: center;
+  }
+  
+  body:not(.tailwind-loaded) .badge-success {
+    background-color: #dcfce7;
+    color: #166534;
+  }
+  
+  body:not(.tailwind-loaded) .badge-warning {
+    background-color: #fef3c7;
+    color: #92400e;
+  }
+  
+  body:not(.tailwind-loaded) .badge-outline {
+    background: transparent;
+    border: 1px solid #d1d5db;
+    color: #6b7280;
+  }
+  
+  body:not(.tailwind-loaded) .stat {
+    background: white;
+    padding: 1.5rem;
+    border-radius: 1rem;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    border: 1px solid #e5e7eb;
+  }
+  
+  body:not(.tailwind-loaded) .stat-title {
+    font-size: 0.875rem;
+    color: #6b7280;
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+  }
+  
+  body:not(.tailwind-loaded) .stat-value {
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 0.25rem;
+  }
+  
+  body:not(.tailwind-loaded) .stat-desc {
+    font-size: 0.75rem;
+    color: #9ca3af;
+  }
+</style> 

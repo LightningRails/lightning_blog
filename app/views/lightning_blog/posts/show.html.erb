@@ -1,7 +1,7 @@
 <div data-theme="<%= LightningBlog.theme %>" class="min-h-screen bg-base-100">
-  <div class="container mx-auto px-4 py-8 max-w-4xl">
-    <!-- Navigation -->
-    <div class="mb-8">
+  <!-- Navigation Bar -->
+  <div class="navbar bg-base-100 border-b border-base-200 sticky top-0 z-50 backdrop-blur-sm bg-base-100/90">
+    <div class="navbar-start">
       <%= link_to lightning_blog.root_path, class: "btn btn-ghost gap-2" do %>
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
           <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
@@ -9,157 +9,226 @@
         Back to Blog
       <% end %>
     </div>
+    <div class="navbar-center">
+      <span class="text-sm text-base-content/60">Lightning Blog</span>
+    </div>
+    <div class="navbar-end">
+      <!-- Share Dropdown -->
+      <div class="dropdown dropdown-end">
+        <div tabindex="0" role="button" class="btn btn-ghost btn-circle">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M7.217 10.907a2.25 2.25 0 1 0 0 2.186m0-2.186c.18.324.283.696.283 1.093s-.103.77-.283 1.093m0-2.186 9.566-5.314m-9.566 7.5 9.566 5.314m0 0a2.25 2.25 0 1 0 3.935 2.186 2.25 2.25 0 0 0-3.935-2.186Zm0-11.314a2.25 2.25 0 1 0 3.935-2.186 2.25 2.25 0 0 0-3.935 2.186Z" />
+          </svg>
+        </div>
+        <ul tabindex="0" class="dropdown-content z-[1] menu p-2 shadow-lg bg-base-100 rounded-box w-52 border border-base-200">
+          <li>
+            <%= link_to "https://twitter.com/intent/tweet?text=#{CGI.escape(@post.title)}&url=#{CGI.escape(request.url)}", 
+                target: "_blank", class: "flex items-center gap-3" do %>
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M24 4.557c-.883.392-1.832.656-2.828.775 1.017-.609 1.798-1.574 2.165-2.724-.951.564-2.005.974-3.127 1.195-.897-.957-2.178-1.555-3.594-1.555-3.179 0-5.515 2.966-4.797 6.045-4.091-.205-7.719-2.165-10.148-5.144-1.29 2.213-.669 5.108 1.523 6.574-.806-.026-1.566-.247-2.229-.616-.054 2.281 1.581 4.415 3.949 4.89-.693.188-1.452.232-2.224.084.626 1.956 2.444 3.379 4.6 3.419-2.07 1.623-4.678 2.348-7.29 2.04 2.179 1.397 4.768 2.212 7.548 2.212 9.142 0 14.307-7.721 13.995-14.646.962-.695 1.797-1.562 2.457-2.549z"/>
+              </svg>
+              Share on Twitter
+            <% end %>
+          </li>
+          <li>
+            <%= link_to "https://www.facebook.com/sharer/sharer.php?u=#{CGI.escape(request.url)}", 
+                target: "_blank", class: "flex items-center gap-3" do %>
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+              </svg>
+              Share on Facebook
+            <% end %>
+          </li>
+          <li>
+            <%= link_to "https://www.linkedin.com/sharing/share-offsite/?url=#{CGI.escape(request.url)}", 
+                target: "_blank", class: "flex items-center gap-3" do %>
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+              </svg>
+              Share on LinkedIn
+            <% end %>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
 
-    <!-- Post Article -->
-    <article class="card bg-base-100 shadow-xl">
-      <!-- Featured Image -->
-      <% if @post.featured_image&.attached? %>
-        <figure class="h-64 md:h-96 overflow-hidden">
+  <!-- Article Container -->
+  <article class="container mx-auto px-4 max-w-4xl">
+    <!-- Featured Image -->
+    <% if @post.featured_image&.attached? %>
+      <div class="my-8">
+        <figure class="rounded-2xl overflow-hidden shadow-2xl">
           <%= image_tag @post.featured_image, 
-              class: "w-full h-full object-cover",
+              class: "w-full h-[50vh] object-cover",
               alt: @post.title %>
         </figure>
+      </div>
+    <% end %>
+
+    <!-- Article Header -->
+    <header class="max-w-3xl mx-auto text-center py-12">
+      <!-- Category Badge -->
+      <%= link_to lightning_blog.category_path(@post.category), 
+          class: "badge badge-primary badge-lg font-medium mb-6 hover:badge-primary-focus transition-colors" do %>
+        <%= @post.category.name %>
+      <% end %>
+      
+      <!-- Title -->
+      <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold text-base-content mb-8 leading-tight">
+        <%= @post.title %>
+      </h1>
+
+      <!-- Excerpt -->
+      <% if @post.excerpt.present? %>
+        <div class="text-xl md:text-2xl text-base-content/80 mb-8 font-light leading-relaxed italic">
+          <%= @post.excerpt %>
+        </div>
       <% end %>
 
-      <div class="card-body">
-        <!-- Post Meta -->
-        <div class="flex flex-wrap items-center gap-4 mb-6 text-sm">
-          <%= link_to lightning_blog.category_path(@post.category), 
-              class: "badge badge-primary badge-lg" do %>
-            <%= @post.category.name %>
-          <% end %>
-          
-          <div class="flex items-center gap-4 text-base-content/70">
-            <span class="flex items-center gap-1">
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5a2.25 2.25 0 002.25-2.25m-18 0v-7.5A2.25 2.25 0 005.25 9h13.5a2.25 2.25 0 002.25 2.25v7.5" />
-              </svg>
-              <%= @post.published_at&.strftime("%B %d, %Y") %>
-            </span>
-            
-            <span class="flex items-center gap-1">
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
-              </svg>
-              <%= @post.reading_time %> min read
-            </span>
-            
-            <% if LightningBlog.track_views? %>
-              <span class="flex items-center gap-1">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.639 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.639 0-8.573-3.007-9.963-7.178z" />
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                </svg>
-                <%= pluralize(@post.views_count, 'view') %>
-              </span>
-            <% end %>
-          </div>
+      <!-- Article Meta -->
+      <div class="flex flex-wrap items-center justify-center gap-6 text-base-content/70 border-y border-base-200 py-6">
+        <div class="flex items-center gap-2">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5a2.25 2.25 0 0 0 2.25-2.25m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5a2.25 2.25 0 0 1 2.25 2.25v7.5" />
+          </svg>
+          <span class="font-medium"><%= @post.published_at&.strftime("%B %d, %Y") %></span>
         </div>
-
-        <!-- Post Title -->
-        <h1 class="text-4xl md:text-5xl font-bold text-base-content mb-6 leading-tight">
-          <%= @post.title %>
-        </h1>
-
-        <!-- Post Excerpt -->
-        <% if @post.excerpt.present? %>
-          <div class="text-xl text-base-content/80 mb-8 italic border-l-4 border-primary pl-6">
-            <%= @post.excerpt %>
+        
+        <div class="flex items-center gap-2">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+          </svg>
+          <span><%= @post.reading_time %> minute read</span>
+        </div>
+        
+        <% if LightningBlog.track_views? && @post.views_count > 0 %>
+          <div class="flex items-center gap-2">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.639 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.639 0-8.573-3.007-9.963-7.178Z" />
+              <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+            </svg>
+            <span><%= pluralize(@post.views_count, 'view') %></span>
           </div>
         <% end %>
+      </div>
+    </header>
 
-        <div class="divider"></div>
+    <!-- Article Content -->
+    <div class="max-w-3xl mx-auto py-12">
+      <div class="prose prose-lg md:prose-xl max-w-none text-base-content prose-headings:text-base-content prose-p:text-base-content/90 prose-a:text-primary prose-strong:text-base-content prose-code:text-base-content prose-pre:bg-base-200 prose-blockquote:border-primary prose-blockquote:text-base-content/80">
+        <%= simple_format(@post.content, { class: "mb-6" }, wrapper_tag: "div") %>
+      </div>
+    </div>
 
-        <!-- Post Content -->
-        <div class="prose prose-lg max-w-none text-base-content">
-          <%= simple_format(@post.content) %>
-        </div>
+    <!-- Article Footer -->
+    <footer class="max-w-3xl mx-auto py-12 border-t border-base-200">
+      <!-- Tags/Category Section -->
+      <div class="mb-8">
+        <h3 class="text-lg font-semibold text-base-content mb-4">Filed under</h3>
+        <%= link_to lightning_blog.category_path(@post.category), 
+            class: "badge badge-outline badge-lg hover:badge-primary transition-colors mr-2" do %>
+          <%= @post.category.name %>
+        <% end %>
+      </div>
 
-        <div class="divider my-8"></div>
-
-        <!-- Post Actions -->
-        <div class="flex flex-wrap justify-between items-center gap-4">
-          <div class="flex items-center gap-2">
-            <span class="text-base-content/70">Share this post:</span>
-            
-            <!-- Social Share Buttons -->
-            <div class="flex gap-2">
-              <%= link_to "https://twitter.com/intent/tweet?text=#{CGI.escape(@post.title)}&url=#{CGI.escape(request.url)}", 
-                  target: "_blank", 
-                  class: "btn btn-circle btn-sm btn-ghost hover:btn-primary" do %>
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M24 4.557c-.883.392-1.832.656-2.828.775 1.017-.609 1.798-1.574 2.165-2.724-.951.564-2.005.974-3.127 1.195-.897-.957-2.178-1.555-3.594-1.555-3.179 0-5.515 2.966-4.797 6.045-4.091-.205-7.719-2.165-10.148-5.144-1.29 2.213-.669 5.108 1.523 6.574-.806-.026-1.566-.247-2.229-.616-.054 2.281 1.581 4.415 3.949 4.89-.693.188-1.452.232-2.224.084.626 1.956 2.444 3.379 4.6 3.419-2.07 1.623-4.678 2.348-7.29 2.04 2.179 1.397 4.768 2.212 7.548 2.212 9.142 0 14.307-7.721 13.995-14.646.962-.695 1.797-1.562 2.457-2.549z"/>
-                </svg>
-              <% end %>
-              
-              <%= link_to "https://www.facebook.com/sharer/sharer.php?u=#{CGI.escape(request.url)}", 
-                  target: "_blank", 
-                  class: "btn btn-circle btn-sm btn-ghost hover:btn-primary" do %>
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
-                </svg>
-              <% end %>
-              
-              <%= link_to "https://www.linkedin.com/sharing/share-offsite/?url=#{CGI.escape(request.url)}", 
-                  target: "_blank", 
-                  class: "btn btn-circle btn-sm btn-ghost hover:btn-primary" do %>
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
-                </svg>
-              <% end %>
-            </div>
-          </div>
-
-          <!-- Category Link -->
-          <%= link_to lightning_blog.category_path(@post.category), 
-              class: "btn btn-outline btn-primary" do %>
-            More in <%= @post.category.name %>
+      <!-- Share Section -->
+      <div class="mb-8">
+        <h3 class="text-lg font-semibold text-base-content mb-4">Share this article</h3>
+        <div class="flex gap-3">
+          <%= link_to "https://twitter.com/intent/tweet?text=#{CGI.escape(@post.title)}&url=#{CGI.escape(request.url)}", 
+              target: "_blank", 
+              class: "btn btn-circle btn-outline hover:btn-primary" do %>
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M24 4.557c-.883.392-1.832.656-2.828.775 1.017-.609 1.798-1.574 2.165-2.724-.951.564-2.005.974-3.127 1.195-.897-.957-2.178-1.555-3.594-1.555-3.179 0-5.515 2.966-4.797 6.045-4.091-.205-7.719-2.165-10.148-5.144-1.29 2.213-.669 5.108 1.523 6.574-.806-.026-1.566-.247-2.229-.616-.054 2.281 1.581 4.415 3.949 4.89-.693.188-1.452.232-2.224.084.626 1.956 2.444 3.379 4.6 3.419-2.07 1.623-4.678 2.348-7.29 2.04 2.179 1.397 4.768 2.212 7.548 2.212 9.142 0 14.307-7.721 13.995-14.646.962-.695 1.797-1.562 2.457-2.549z"/>
+            </svg>
+          <% end %>
+          
+          <%= link_to "https://www.facebook.com/sharer/sharer.php?u=#{CGI.escape(request.url)}", 
+              target: "_blank", 
+              class: "btn btn-circle btn-outline hover:btn-primary" do %>
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+            </svg>
+          <% end %>
+          
+          <%= link_to "https://www.linkedin.com/sharing/share-offsite/?url=#{CGI.escape(request.url)}", 
+              target: "_blank", 
+              class: "btn btn-circle btn-outline hover:btn-primary" do %>
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+            </svg>
           <% end %>
         </div>
       </div>
-    </article>
 
-    <!-- Related Posts -->
-    <% if @related_posts.any? %>
-      <div class="mt-12">
-        <h3 class="text-2xl font-bold text-base-content mb-6">Related Posts</h3>
+      <!-- Continue Reading -->
+      <div class="text-center">
+        <%= link_to lightning_blog.category_path(@post.category), 
+            class: "btn btn-primary btn-lg" do %>
+          More articles in <%= @post.category.name %>
+        <% end %>
+      </div>
+    </footer>
+  </article>
+
+  <!-- Related Posts Section -->
+  <% if @related_posts.any? %>
+    <section class="bg-base-200/30 py-16 mt-16">
+      <div class="container mx-auto px-4 max-w-7xl">
+        <div class="text-center mb-12">
+          <h2 class="text-3xl md:text-4xl font-bold text-base-content mb-4">Related Articles</h2>
+          <p class="text-base-content/70 text-lg">Continue exploring</p>
+        </div>
         
-        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-5xl mx-auto">
           <% @related_posts.each do |post| %>
-            <div class="card bg-base-100 shadow-lg hover:shadow-xl transition-all duration-300">
+            <article class="card bg-base-100 shadow-lg hover:shadow-xl transition-all duration-300 border border-base-200 group">
               <% if post.featured_image&.attached? %>
-                <figure class="h-32 overflow-hidden">
+                <figure class="h-48 overflow-hidden">
                   <%= image_tag post.featured_image, 
-                      class: "w-full h-full object-cover hover:scale-105 transition-transform duration-300",
+                      class: "w-full h-full object-cover group-hover:scale-105 transition-transform duration-500",
                       alt: post.title %>
                 </figure>
               <% end %>
               
-              <div class="card-body p-4">
-                <h4 class="card-title text-base text-base-content mb-2">
-                  <%= link_to post.title, lightning_blog.post_path(post), 
-                      class: "hover:text-primary transition-colors" %>
-                </h4>
+              <div class="card-body p-6">
+                <!-- Category -->
+                <div class="mb-3">
+                  <%= link_to lightning_blog.category_path(post.category), 
+                      class: "badge badge-outline badge-sm hover:badge-primary transition-colors" do %>
+                    <%= post.category.name %>
+                  <% end %>
+                </div>
                 
-                <div class="flex justify-between items-center text-xs text-base-content/60">
-                  <span><%= post.published_at&.strftime("%b %d") %></span>
-                  <span><%= post.reading_time %> min</span>
+                <!-- Title -->
+                <h3 class="card-title text-lg font-bold text-base-content mb-3 leading-tight">
+                  <%= link_to post.title, lightning_blog.post_path(post), 
+                      class: "hover:text-primary transition-colors duration-200" %>
+                </h3>
+                
+                <!-- Meta -->
+                <div class="flex justify-between items-center text-sm text-base-content/60">
+                  <span><%= post.published_at&.strftime("%b %d, %Y") %></span>
+                  <span><%= post.reading_time %> min read</span>
                 </div>
               </div>
-            </div>
+            </article>
           <% end %>
         </div>
       </div>
-    <% end %>
-  </div>
+    </section>
+  <% end %>
 </div>
 
-<!-- Fallback styles for non-Tailwind environments -->
+<!-- Enhanced Fallback Styles -->
 <style>
   body:not(.tailwind-loaded) [data-theme] {
     background-color: #ffffff;
     color: #1f2937;
     min-height: 100vh;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    line-height: 1.6;
   }
   
   body:not(.tailwind-loaded) [data-theme="dark"] {
@@ -167,19 +236,113 @@
     color: #f9fafb;
   }
   
+  body:not(.tailwind-loaded) .container {
+    max-width: 1024px;
+    margin: 0 auto;
+    padding: 0 1rem;
+  }
+  
+  body:not(.tailwind-loaded) .navbar {
+    padding: 1rem 0;
+    border-bottom: 1px solid #e5e7eb;
+    background: rgba(255, 255, 255, 0.9);
+    backdrop-filter: blur(8px);
+    position: sticky;
+    top: 0;
+    z-index: 50;
+  }
+  
   body:not(.tailwind-loaded) .prose {
-    line-height: 1.6;
+    font-size: 1.125rem;
+    line-height: 1.8;
+    max-width: none;
   }
   
   body:not(.tailwind-loaded) .prose h1,
   body:not(.tailwind-loaded) .prose h2,
   body:not(.tailwind-loaded) .prose h3 {
-    margin-top: 1.5em;
-    margin-bottom: 0.5em;
-    font-weight: 600;
+    margin-top: 2rem;
+    margin-bottom: 1rem;
+    font-weight: 700;
+    line-height: 1.3;
+  }
+  
+  body:not(.tailwind-loaded) .prose h1 {
+    font-size: 2.5rem;
+  }
+  
+  body:not(.tailwind-loaded) .prose h2 {
+    font-size: 2rem;
+  }
+  
+  body:not(.tailwind-loaded) .prose h3 {
+    font-size: 1.5rem;
   }
   
   body:not(.tailwind-loaded) .prose p {
-    margin-bottom: 1em;
+    margin-bottom: 1.5rem;
+  }
+  
+  body:not(.tailwind-loaded) .prose a {
+    color: #3b82f6;
+    text-decoration: none;
+  }
+  
+  body:not(.tailwind-loaded) .prose a:hover {
+    text-decoration: underline;
+  }
+  
+  body:not(.tailwind-loaded) .btn {
+    display: inline-block;
+    padding: 0.75rem 1.5rem;
+    border-radius: 0.5rem;
+    text-decoration: none;
+    font-weight: 600;
+    text-align: center;
+    cursor: pointer;
+    border: none;
+    transition: all 0.2s;
+  }
+  
+  body:not(.tailwind-loaded) .btn-primary {
+    background-color: #3b82f6;
+    color: white;
+  }
+  
+  body:not(.tailwind-loaded) .btn-primary:hover {
+    background-color: #2563eb;
+  }
+  
+  body:not(.tailwind-loaded) .btn-outline {
+    background: transparent;
+    border: 2px solid #3b82f6;
+    color: #3b82f6;
+  }
+  
+  body:not(.tailwind-loaded) .btn-outline:hover {
+    background-color: #3b82f6;
+    color: white;
+  }
+  
+  body:not(.tailwind-loaded) .badge {
+    display: inline-block;
+    padding: 0.375rem 0.75rem;
+    border-radius: 0.375rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    background-color: #3b82f6;
+    color: white;
+  }
+  
+  body:not(.tailwind-loaded) .card {
+    background: white;
+    border-radius: 1rem;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    border: 1px solid #e5e7eb;
+  }
+  
+  body:not(.tailwind-loaded) .card-body {
+    padding: 1.5rem;
   }
 </style> 
