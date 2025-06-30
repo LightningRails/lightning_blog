@@ -1,0 +1,24 @@
+<div class="categories-container">
+  <div class="categories-header">
+    <h1>Blog Categories</h1>
+    <p>Browse posts by category</p>
+  </div>
+  
+  <div class="categories-grid">
+    <% @categories.each do |category| %>
+      <div class="category-card">
+        <h3><%= link_to category.name, lightning_blog.category_path(category) %></h3>
+        <% if category.description.present? %>
+          <p class="category-description"><%= category.description %></p>
+        <% end %>
+        <div class="category-meta">
+          <span class="post-count"><%= pluralize(category.posts_count, 'post') %></span>
+        </div>
+      </div>
+    <% end %>
+  </div>
+  
+  <div class="categories-navigation">
+    <%= link_to "← Back to Blog", lightning_blog.root_path, class: "back-link" %>
+  </div>
+</div> 

@@ -1,0 +1,52 @@
+<div class="category-container">
+  <div class="category-header">
+    <h1><%= @category.name %></h1>
+    <% if @category.description.present? %>
+      <p class="category-description"><%= @category.description %></p>
+    <% end %>
+    <p class="category-meta"><%= pluralize(@category.posts_count, 'post') %></p>
+  </div>
+  
+  <div class="category-posts">
+    <% if @posts.any? %>
+      <% @posts.each do |post| %>
+        <article class="post-card">
+          <% if post.featured_image_file.attached? %>
+            <div class="post-image">
+              <%= image_tag post.featured_image_file, alt: post.title %>
+            </div>
+          <% end %>
+          
+          <div class="post-content">
+            <div class="post-meta">
+              <span class="post-date"><%= post.published_at.strftime("%B %d, %Y") %></span>
+              <span class="reading-time"><%= post.reading_time %> min read</span>
+            </div>
+            
+            <h2 class="post-title">
+              <%= link_to post.title, lightning_blog.post_path(post) %>
+            </h2>
+            
+            <% if post.excerpt.present? %>
+              <p class="post-excerpt"><%= truncate(post.excerpt, length: 150) %></p>
+            <% else %>
+              <p class="post-excerpt"><%= truncate(strip_tags(post.content), length: 150) %></p>
+            <% end %>
+            
+            <%= link_to "Read More", lightning_blog.post_path(post), class: "read-more-link" %>
+          </div>
+        </article>
+      <% end %>
+    <% else %>
+      <div class="no-posts">
+        <h3>No posts in this category yet</h3>
+        <p>Check back later for new content!</p>
+      </div>
+    <% end %>
+  </div>
+  
+  <div class="category-navigation">
+    <%= link_to "← Back to Blog", lightning_blog.root_path, class: "back-link" %>
+    <%= link_to "All Categories", lightning_blog.categories_path, class: "categories-link" %>
+  </div>
+</div> 

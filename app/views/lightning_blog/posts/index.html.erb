@@ -1,0 +1,105 @@
+<div class="container mx-auto px-4 py-8 max-w-7xl">
+  <!-- Header Section -->
+  <div class="text-center mb-12">
+    <h1 class="text-4xl md:text-5xl font-bold text-base-content mb-6">Blog</h1>
+    
+    <!-- Search Form -->
+    <%= form_with url: lightning_blog.posts_path, method: :get, local: true, class: "max-w-md mx-auto" do |form| %>
+      <div class="join w-full">
+        <%= form.text_field :search, 
+            placeholder: "Search posts...", 
+            value: params[:search], 
+            class: "input input-bordered join-item flex-1" %>
+        <%= form.submit "Search", class: "btn btn-primary join-item" %>
+      </div>
+    <% end %>
+  </div>
+
+  <div class="grid lg:grid-cols-4 gap-8">
+    <!-- Sidebar -->
+    <div class="lg:col-span-1">
+      <div class="card bg-base-100 shadow-md">
+        <div class="card-body">
+          <h3 class="card-title text-lg mb-4">Categories</h3>
+          <div class="space-y-2">
+            <%= link_to lightning_blog.root_path, 
+                class: "btn btn-ghost btn-sm justify-start w-full #{'btn-active' if params[:category].blank?}" do %>
+              All Posts
+            <% end %>
+            
+            <% @categories.each do |category| %>
+              <%= link_to lightning_blog.category_path(category), 
+                  class: "btn btn-ghost btn-sm justify-start w-full #{'btn-active' if params[:category] == category.slug}" do %>
+                <span class="flex-1 text-left"><%= category.name %></span>
+                <span class="badge badge-neutral badge-sm"><%= category.posts_count %></span>
+              <% end %>
+            <% end %>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Posts Grid -->
+    <div class="lg:col-span-3">
+      <% if @posts.any? %>
+        <div class="grid gap-6">
+          <% @posts.each do |post| %>
+            <article class="card bg-base-100 shadow-md hover:shadow-lg transition-shadow">
+              <% if post.featured_image_file.attached? %>
+                <figure class="h-48 overflow-hidden">
+                  <%= image_tag post.featured_image_file, 
+                      alt: post.title,
+                      class: "w-full h-full object-cover" %>
+                </figure>
+              <% end %>
+              
+              <div class="card-body">
+                <!-- Post Meta -->
+                <div class="flex flex-wrap gap-2 mb-3 text-sm">
+                  <% if post.category %>
+                    <%= link_to post.category.name, 
+                        lightning_blog.category_path(post.category), 
+                        class: "badge badge-primary" %>
+                  <% end %>
+                  <span class="badge badge-ghost">
+                    <%= post.published_at.strftime("%B %d, %Y") %>
+                  </span>
+                  <span class="badge badge-ghost">
+                    <%= post.reading_time %> min read
+                  </span>
+                </div>
+                
+                <!-- Post Title -->
+                <h2 class="card-title text-xl mb-3 hover:text-primary transition-colors">
+                  <%= link_to post.title, lightning_blog.post_path(post) %>
+                </h2>
+                
+                <!-- Post Excerpt -->
+                <% if post.excerpt.present? %>
+                  <p class="text-base-content/70 mb-4"><%= truncate(post.excerpt, length: 150) %></p>
+                <% else %>
+                  <p class="text-base-content/70 mb-4"><%= truncate(strip_tags(post.content), length: 150) %></p>
+                <% end %>
+                
+                <div class="card-actions justify-end">
+                  <%= link_to "Read More", 
+                      lightning_blog.post_path(post), 
+                      class: "btn btn-primary btn-sm" %>
+                </div>
+              </div>
+            </article>
+          <% end %>
+        </div>
+      <% else %>
+        <div class="text-center py-12">
+          <div class="max-w-md mx-auto">
+            <h3 class="text-2xl font-semibold text-base-content mb-4">No posts found</h3>
+            <p class="text-base-content/70">
+              There are no published posts<%= " matching your search" if params[:search].present? %>.
+            </p>
+          </div>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div> 
