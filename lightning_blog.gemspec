@@ -33,6 +33,6 @@ Gem::Specification.new do |spec|
   # Add 'cloudinary' to your Gemfile for cloud image storage
   
   # Optional Tailwind/DaisyUI support
-  spec.add_development_dependency "tailwindcss-rails", "~> 2.0"
+  spec.add_development_dependency "tailwindcss-rails", "~> 4.2"
   spec.add_development_dependency "rspec", "~> 3.0"
 end
