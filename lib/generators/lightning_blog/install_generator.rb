@@ -7,8 +7,32 @@ module LightningBlog
       
       desc "Install Lightning Blog into your Rails application"
       
+      def check_existing_tables
+        @tables_exist = ActiveRecord::Base.connection.table_exists?('lightning_blog_categories') ||
+                        ActiveRecord::Base.connection.table_exists?('lightning_blog_posts')
+        
+        if @tables_exist
+          say ""
+          say "⚠️  Lightning Blog tables already exist in your database."
+          say "   This might be from a previous installation attempt."
+          say ""
+          if yes?("   Would you like to continue anyway? (y/n)")
+            say "   Continuing with existing tables..."
+          else
+            say "   Installation cancelled. Consider running:"
+            say "   $ rails db:drop db:create db:migrate"
+            say "   Or remove Lightning Blog tables manually."
+            exit
+          end
+        end
+      end
+      
       def copy_migrations
-        rake "lightning_blog:install:migrations"
+        unless @tables_exist
+          rake "lightning_blog:install:migrations"
+        else
+          say "⏭️  Skipping migration copy (tables already exist)"
+        end
       end
       
       def add_routes
